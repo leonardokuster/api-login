@@ -89,7 +89,7 @@ app.post("/salvarcadastro", async (req, res) => {
 
     res.json({
       error: false,
-      message: "Conta criada com sucesso! Verifique seu email com os dados de login."
+      message: "Conta criada com sucesso! Verifique seu e-mail com os dados de login."
     });
 
     const info = await transporter.sendMail({
@@ -119,6 +119,41 @@ app.post("/salvarcadastro", async (req, res) => {
     });
   }
 });
+
+app.post("/verificarNome", async (req, res) => {
+  const { nome } = req.body;
+
+  try {
+    const cadastro = await Cadastro.findOne({ where: { nome: nome } });
+    if (cadastro) {
+      return res.json({ error: true });
+    }
+  } catch (error) {
+    console.error("Erro ao verificar nome:", error);
+    res.status(500).json({
+      error: true,
+      message: "Erro interno do servidor"
+    });
+  }
+});
+
+app.post("/verificarEmail", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const cadastro = await Cadastro.findOne({ where: { email: email } });
+    if (cadastro) {
+      return res.json({ error: true });
+    } 
+  } catch (error) {
+    console.error("Erro ao verificar email:", error);
+    res.status(500).json({
+      error: true,
+      message: "Erro interno do servidor"
+    });
+  }
+});
+
 
 const PORT = process.env.PORT || 5656;
 app.listen(PORT, () => {
