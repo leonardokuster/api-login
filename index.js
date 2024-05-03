@@ -62,7 +62,12 @@ app.post("/login", async (req, res) => {
         });
     }
 
-    res.render("portal");
+    if (user.tipo === 'admin') {
+      return res.redirect("/admin");
+    } else {
+      return res.redirect("/user");
+    }
+
   } catch (error) {
     console.error("Erro ao fazer login:", error);
     res.status(500).json({

@@ -15,6 +15,12 @@ const Cadastro = connection.define('cadastros', {
   senha: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+
+  tipo: {
+    type: Sequelize.STRING, 
+    allowNull: false,
+    defaultValue: 'normal'
   }
 })
 
