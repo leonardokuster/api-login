@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
     db.cadastros.findAll()
       .then((cadastro) => {
         res.render("index", { cadastro: cadastro });
+        res.send("API está em funcionamento");
       })
       .catch((error) => {
         console.error("Erro ao buscar cadastros:", error);
