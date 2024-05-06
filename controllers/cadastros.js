@@ -36,9 +36,9 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            return res.redirect("../views/admin");
+            return res.redirect("../views/admin.ejs");
         } else {
-            return res.redirect("../views/normal");
+            return res.redirect("../views/normal.ejs");
         }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
