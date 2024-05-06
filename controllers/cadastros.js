@@ -19,28 +19,29 @@ router.post("/login", async (req, res) => {
     const { email, senha } = req.body;
   
     try {
-      const emailCadastrado = await db.cadastros.findOne({ where: { email: email } });
-      if (!emailCadastrado) {
-          return res.json({
+        const emailCadastrado = await db.cadastros.findOne({ where: { email: email } });
+        if (!emailCadastrado) {
+            return res.json({
             error: true,
             message: "Usuário não encontrado."
-          });
-      }
-  
-      const senhaCorreta = await bcrypt.compare(senha, cadastro.senha);
-      if (!senhaCorreta) {
-          return res.json({
+            });
+        }
+
+        const senhaCorreta = await bcrypt.compare(senha, cadastro.senha);
+        if (!senhaCorreta) {
+            return res.json({
             error: true,
             message: "Senha inválida."
-          });
-      }
-  
-      if (cadastro.tipo === 'admin') {
-        return res.json({ message: "Você é um administrador" }).redirect("/admin");
-      } else {
-        return res.json({ message: "Você é um usuário comum" }).redirect("/normal");
-      }
-  
+            });
+        }
+
+        if (cadastro.tipo === 'admin') {
+        res.redirect("/admin");
+        return;
+        } else {
+            res.redirect("/normal");
+            return;
+        }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       res.status(500).json({
