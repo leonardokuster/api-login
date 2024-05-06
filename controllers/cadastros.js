@@ -19,28 +19,26 @@ router.post("/login", async (req, res) => {
     const { email, senha } = req.body;
   
     try {
-        const emailCadastrado = await db.cadastros.findOne({ where: { email: email } });
-        if (!emailCadastrado) {
+        const cadastro = await db.cadastros.findOne({ where: { email: email } });
+        if (!cadastro) {
             return res.json({
-            error: true,
-            message: "Usuário não encontrado."
+                error: true,
+                message: "Usuário não encontrado."
             });
         }
 
         const senhaCorreta = await bcrypt.compare(senha, cadastro.senha);
         if (!senhaCorreta) {
             return res.json({
-            error: true,
-            message: "Senha inválida."
+                error: true,
+                message: "Senha inválida."
             });
         }
 
         if (cadastro.tipo === 'admin') {
-        res.redirect("/admin");
-        return;
+            return res.redirect("/admin");
         } else {
-            res.redirect("/normal");
-            return;
+            return res.redirect("/normal");
         }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
