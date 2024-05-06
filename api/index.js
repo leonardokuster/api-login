@@ -28,6 +28,7 @@ const cadastros = require("../controllers/cadastros");
 app.use('/escritoriokuster', async (req, res, next) => {
   const cacheKey = req.originalUrl;
   const cachedData = cache.get(cacheKey);
+  res.json({ message: "API está em funcionamento" });
   
   if (cachedData) {
       return res.json(cachedData);
