@@ -96,7 +96,7 @@ router.post("/salvarcadastro", async (req, res) => {
     const { nome, email, senha, confisenha } = req.body;
   
     if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "") {
-      return res.redirect("/cadastrar");
+      return res.json({ message: "Não foi possível realizar seu cadastro, verifique os dados informados." });
     }
   
     try {
