@@ -36,9 +36,9 @@ router.post("/login", async (req, res) => {
       }
   
       if (cadastro.tipo === 'admin') {
-        return res.redirect("/admin");
+        return res.json({ message: "Você é um administrador" }).redirect("/admin");
       } else {
-        return res.redirect("/normal");
+        return res.json({ message: "Você é um usuário comum" }).redirect("/normal");
       }
   
     } catch (error) {
