@@ -56,7 +56,7 @@ router.post("/verificarNome", async (req, res) => {
     try {
         const nomeExistente = await db.cadastros.findOne({ where: { nome: nome } });
         if (nomeExistente) {
-            return res.status(400).json({ message: "Nome de usuário já está em uso." });
+            return res.status(400).json({ error: true, message: "Nome de usuário já está em uso." });
         }  
     } catch (error) {
         console.error("Erro ao verificar nome:", error);
@@ -70,7 +70,7 @@ router.post("/verificarEmail", async (req, res) => {
     try {
         const emailExistente = await db.cadastros.findOne({ where: { email: email } });
         if (emailExistente) {
-            return res.status(400).json({ message: "E-mail já está em uso." });
+            return res.status(400).json({ error: true, message: "E-mail já está em uso." });
         }  
     } catch (error) {
         console.error("Erro ao verificar nome:", error);
