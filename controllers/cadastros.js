@@ -19,8 +19,8 @@ router.post("/login", async (req, res) => {
     const { email, senha } = req.body;
   
     try {
-      const cadastro = await db.cadastros.findOne({ where: { email: email } });
-      if (!cadastro) {
+      const emailCadastrado = await db.cadastros.findOne({ where: { email: email } });
+      if (!emailCadastrado) {
           return res.json({
             error: true,
             message: "Usuário não encontrado."
@@ -49,45 +49,6 @@ router.post("/login", async (req, res) => {
       });
     }
 });
-
-router.post("/verificarNome", async (req, res) => {
-    const { nome } = req.body;
-  
-    try {
-        const nomeExistente = await db.cadastros.findOne({ where: { nome: nome } });
-        if (nomeExistente) {
-            return res.status(400).json({ error: true, message: "Nome de usuário já está em uso." });
-        } else {
-            return res.status(200).json({ message: "Nome de usuário disponível para uso" });
-        }
-    } catch (error) {
-        console.error("Erro ao verificar nome:", error);
-        res.status(500).json({
-            error: true,
-            message: "Erro interno do servidor"
-        });
-    }
-});
-
-router.post("/verificarEmail", async (req, res) => {
-    const { email } = req.body;
-  
-    try {
-        const emailExistente = await db.cadastros.findOne({ where: { email: email } });
-        if (emailExistente) {
-            return res.status(400).json({ error: true, message: "E-mail já está em uso." });
-        } else {
-            return res.status(200).json({ message: "E-mail disponível para uso" });
-        }
-    } catch (error) {
-        console.error("Erro ao verificar e-mail:", error);
-        res.status(500).json({
-            error: true,
-            message: "Erro interno do servidor"
-        });
-    }
-});
-
     
 router.post("/salvarcadastro", async (req, res) => {
     const { nome, email, senha, confisenha } = req.body;
@@ -97,6 +58,16 @@ router.post("/salvarcadastro", async (req, res) => {
     }
   
     try {
+        const nomeExistente = await db.cadastros.findOne({ where: { nome: nome } });
+        if (nomeExistente) {
+            return res.status(400).json({ error: true, message: "Nome de usuário já está em uso." });
+        }
+        
+        const emailExistente = await db.cadastros.findOne({ where: { email: email } });
+        if (emailExistente) {
+            return res.status(400).json({ error: true, message: "E-mail já está em uso." });
+        }
+  
         const hashedSenha = await bcrypt.hash(senha, 10);
         await db.cadastros.create({ nome, email, senha: hashedSenha });
 
@@ -141,7 +112,8 @@ router.post("/salvarcadastro", async (req, res) => {
         });
     }
 });
-  
+
+
 module.exports = router;
   
   
