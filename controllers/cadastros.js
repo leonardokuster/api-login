@@ -73,7 +73,7 @@ router.post("/verificarEmail", async (req, res) => {
             return res.status(400).json({ error: true, message: "E-mail já está em uso." });
         }  
     } catch (error) {
-        console.error("Erro ao verificar nome:", error);
+        console.error("Erro ao verificar e-mail:", error);
         res.status(500).json({ message: "Erro interno do servidor" });
     }
 });
