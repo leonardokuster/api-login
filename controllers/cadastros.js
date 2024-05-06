@@ -57,10 +57,15 @@ router.post("/verificarNome", async (req, res) => {
         const nomeExistente = await db.cadastros.findOne({ where: { nome: nome } });
         if (nomeExistente) {
             return res.status(400).json({ error: true, message: "Nome de usuário já está em uso." });
-        }  
+        } else {
+            return res.status(200).json({ message: "Nome de usuário disponível para uso" });
+        }
     } catch (error) {
         console.error("Erro ao verificar nome:", error);
-        res.status(500).json({ message: "Erro interno do servidor" });
+        res.status(500).json({
+            error: true,
+            message: "Erro interno do servidor"
+        });
     }
 });
 
@@ -71,10 +76,15 @@ router.post("/verificarEmail", async (req, res) => {
         const emailExistente = await db.cadastros.findOne({ where: { email: email } });
         if (emailExistente) {
             return res.status(400).json({ error: true, message: "E-mail já está em uso." });
-        }  
+        } else {
+            return res.status(200).json({ message: "E-mail disponível para uso" });
+        }
     } catch (error) {
         console.error("Erro ao verificar e-mail:", error);
-        res.status(500).json({ message: "Erro interno do servidor" });
+        res.status(500).json({
+            error: true,
+            message: "Erro interno do servidor"
+        });
     }
 });
 
@@ -89,6 +99,11 @@ router.post("/salvarcadastro", async (req, res) => {
     try {
         const hashedSenha = await bcrypt.hash(senha, 10);
         await db.cadastros.create({ nome, email, senha: hashedSenha });
+
+        res.status(201).json({
+            error: false,
+            message: "Conta criada com sucesso! Verifique seu e-mail com os dados de login."
+        });
         
         const info = await transporter.sendMail({
             from: "Escritório Kuster <l.kusterr@gmail.com>",
@@ -118,17 +133,11 @@ router.post("/salvarcadastro", async (req, res) => {
             `,
         });
         console.log("Email enviado:", info.response);
-
-        res.status(201).json({
-            error: false,
-            message: "Conta criada com sucesso! Verifique seu e-mail com os dados de login."
-        });
-
         } catch (error) {
         console.error("Erro ao salvar cadastro:", error);
         res.status(500).json({
             error: true,
-            message: "Erro interno do servidor"
+            message: "Erro ao salvar cadastro"
         });
     }
 });
