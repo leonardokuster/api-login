@@ -49,6 +49,44 @@ router.post("/login", async (req, res) => {
       });
     }
 });
+
+router.post("/verificarNome", async (req, res) => {
+    const { nome } = req.body;
+  
+    try {
+      const cadastro = await db.cadastros.findOne({ where: { nome: nome } });
+      if (cadastro) {
+        return res.json({ message: "Nome de usuário já está em uso" });
+      } else {
+        return res.json({ message: "Nome de usuário disponível para uso" });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar nome:", error);
+      res.status(500).json({
+        error: true,
+        message: "Erro interno do servidor"
+      });
+    }
+});
+
+router.post("/verificarEmail", async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const cadastro = await db.cadastros.findOne({ where: { email: email } });
+      if (cadastro) {
+        return res.json({ message: "E-mail já está em uso" });
+      } else {
+        return res.json({ message: "E-mail disponível para uso" });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar email:", error);
+      res.status(500).json({
+        error: true,
+        message: "Erro interno do servidor"
+      });
+    }
+});
       
 router.get("/cadastrar", (req, res) => {
     res.render("cadastro");
@@ -91,40 +129,6 @@ router.post("/salvarcadastro", async (req, res) => {
       console.log("Email enviado:", info.response);
     } catch (error) {
       console.error("Erro ao salvar cadastro:", error);
-      res.status(500).json({
-        error: true,
-        message: "Erro interno do servidor"
-      });
-    }
-});
-
-router.post("/verificarNome", async (req, res) => {
-    const { nome } = req.body;
-  
-    try {
-      const cadastro = await db.cadastros.findOne({ where: { nome: nome } });
-      if (cadastro) {
-        return res.json({ error: true });
-      }
-    } catch (error) {
-      console.error("Erro ao verificar nome:", error);
-      res.status(500).json({
-        error: true,
-        message: "Erro interno do servidor"
-      });
-    }
-});
-
-router.post("/verificarEmail", async (req, res) => {
-    const { email } = req.body;
-  
-    try {
-      const cadastro = await db.cadastros.findOne({ where: { email: email } });
-      if (cadastro) {
-        return res.json({ error: true });
-      } 
-    } catch (error) {
-      console.error("Erro ao verificar email:", error);
       res.status(500).json({
         error: true,
         message: "Erro interno do servidor"
