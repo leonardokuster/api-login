@@ -50,25 +50,43 @@ router.post("/login", async (req, res) => {
     }
 });
 
-    
-router.post("/salvarcadastro", async (req, res) => {
-    const { nome, email, senha, confisenha } = req.body;
-  
-    if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "") {
-      return res.status(400).json({ message: "Não foi possível realizar seu cadastro, verifique os dados informados." });
-    }
+router.post("/verificarNome", async (req, res) => {
+    const { nome } = req.body;
   
     try {
         const nomeExistente = await db.cadastros.findOne({ where: { nome: nome } });
         if (nomeExistente) {
             return res.status(400).json({ message: "Nome de usuário já está em uso." });
-        }
+        }  
+    } catch (error) {
+        console.error("Erro ao verificar nome:", error);
+        res.status(500).json({ message: "Erro interno do servidor" });
+    }
+});
 
+router.post("/verificarEmail", async (req, res) => {
+    const { email } = req.body;
+  
+    try {
         const emailExistente = await db.cadastros.findOne({ where: { email: email } });
         if (emailExistente) {
             return res.status(400).json({ message: "E-mail já está em uso." });
-        }
+        }  
+    } catch (error) {
+        console.error("Erro ao verificar nome:", error);
+        res.status(500).json({ message: "Erro interno do servidor" });
+    }
+});
 
+    
+router.post("/salvarcadastro", async (req, res) => {
+    const { nome, email, senha, confisenha } = req.body;
+  
+    if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "") {
+        return res.status(400).json({ message: "Não foi possível realizar seu cadastro, verifique os dados informados." });
+    }
+  
+    try {
         const hashedSenha = await bcrypt.hash(senha, 10);
         await db.cadastros.create({ nome, email, senha: hashedSenha });
         
