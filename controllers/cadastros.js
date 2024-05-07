@@ -15,11 +15,11 @@ router.get("/", (req, res) => {
       });
 });
 
-router.get("/normal", (req, res) => {
+router.post("/normal", (req, res) => {
     res.render("normal");
 });
 
-router.get("/admin", (req, res) => {
+router.post("/admin", (req, res) => {
     res.render("admin");
 });
 
