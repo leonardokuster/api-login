@@ -15,6 +15,14 @@ router.get("/", (req, res) => {
       });
 });
 
+router.get("/normal", (req, res) => {
+    res.render("normal");
+});
+
+router.get("/admin", (req, res) => {
+    res.render("admin");
+});
+
 router.post("/login", async (req, res) => {
     const { email, senha } = req.body;
   
@@ -36,9 +44,9 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            return res.redirect("https://api-login-self.vercel.app/views/admin.ejs");
+            return res.redirect("/escritoriokuster/admin");
         } else {
-            return res.redirect("https://api-login-self.vercel.app/views/normal.ejs");
+            return res.redirect("/escritoriokuster/normal");
         }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
@@ -114,5 +122,3 @@ router.post("/register", async (req, res) => {
 
 
 module.exports = router;
-  
-  
