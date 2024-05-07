@@ -28,4 +28,3 @@ const PORT = process.env.PORT || 5656;
 app.listen(PORT, () => {
   console.log(`A aplicação está funcionando na porta ${PORT}!`);
 });
-

@@ -49,7 +49,7 @@ router.post("/login", async (req, res) => {
     }
 });
     
-router.post("/salvarcadastro", async (req, res) => {
+router.post("/register", async (req, res) => {
     const { nome, email, senha, confisenha } = req.body;
   
     if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "") {
