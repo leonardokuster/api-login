@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 
 app.use(cors());
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
