@@ -36,9 +36,9 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            return res.render("admin");
+            return res.send("Você é administrador");
         } else if (cadastro.tipo === 'normal') {
-            return res.render("normal");
+            return res.send("Você é um usuário normal");
         }        
     } catch (error) {
       console.error("Erro ao fazer login:", error);
