@@ -36,11 +36,9 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            res.render("admin");
-            return res.redirect("/escritoriokuster/admin");
+            return res.status(200).json({ route: "/escritoriokuster/admin" });
         } else if (cadastro.tipo === 'normal') {
-            res.render("normal");
-            return res.redirect("/escritoriokuster/normal");
+            return res.status(200).json({ route: "/escritoriokuster/normal" });
         }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
