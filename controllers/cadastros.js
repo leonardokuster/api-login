@@ -36,10 +36,10 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            res.render("admin")
+            res.render("admin");
             return res.redirect("/escritoriokuster/admin");
         } else if (cadastro.tipo === 'normal') {
-            res.render("normal")
+            res.render("normal");
             return res.redirect("/escritoriokuster/normal");
         }
     } catch (error) {
