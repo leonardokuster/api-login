@@ -36,9 +36,9 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            return res.status(302).send("/escritoriokuster/admin");
+            return res.status(302).send("admin");
         } else if (cadastro.tipo === 'normal') {
-            return res.status(302).send("/escritoriokuster/normal");
+            return res.status(302).send("normal");
         }        
     } catch (error) {
       console.error("Erro ao fazer login:", error);
