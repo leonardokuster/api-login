@@ -36,10 +36,12 @@ router.post("/login", async (req, res) => {
         }
 
         if (cadastro.tipo === 'admin') {
-            return res.send("Você é administrador");
+            res.render("admin")
+            return res.redirect("/escritoriokuster/admin");
         } else if (cadastro.tipo === 'normal') {
-            return res.send("Você é um usuário normal");
-        }        
+            res.render("normal")
+            return res.redirect("/escritoriokuster/normal");
+        }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       res.status(500).json({
