@@ -15,6 +15,14 @@ router.get("/", (req, res) => {
       });
 });
 
+router.get("/escritoriokuster/normal", (req, res) => {
+    res.render("normal");
+});
+
+router.get("/escritoriokuster/admin", (req, res) => {
+    res.render("admin");
+});
+
 router.post("/login", async (req, res) => {
     const { email, senha } = req.body;
   
