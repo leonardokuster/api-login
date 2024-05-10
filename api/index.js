@@ -1,30 +1,13 @@
 const express = require("express");
-const cors = require('cors');
+const routes = require('./routes');
+
 const app = express();
-const bodyParser = require("body-parser");
-const path = require('path');
+const PORT = process.env.PORT || 8080;
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type"); 
-    next();
-});
+routes(app);
 
-app.use(cors());
-
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'ejs');
-
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-
-
-const cadastros = require("../controllers/cadastros");
-app.use('/escritoriokuster', cadastros);
-
-
-const PORT = process.env.PORT || 5656;
 app.listen(PORT, () => {
   console.log(`A aplicação está funcionando na porta ${PORT}!`);
 });
+
+module.exports = app
