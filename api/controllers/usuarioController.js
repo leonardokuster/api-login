@@ -9,9 +9,9 @@ class UsuarioController {
             const usuario = await usuarioService.logarUsuario({ email, senha });
             
             if (usuario.tipo === 'admin') {
-                console.log('Administrador')
+                res.render('admin', { nome: usuario.nome });
             } else if (usuario.tipo === 'normal') {
-                console.log('Normal')
+                res.render('normal', { nome: usuario.nome });
             } else {
                 return res.status(403).send({ message: 'Usuário inválido.' });
             }
