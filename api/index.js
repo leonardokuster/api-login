@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 8080;
 
 app.set('view engine', 'ejs');
 app.engine('ejs', require('ejs').__express);
+app.set('views', path.join(__dirname, 'views'));
 
 
 routes(app);
