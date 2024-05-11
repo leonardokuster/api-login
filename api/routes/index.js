@@ -2,11 +2,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const usuario = require('./usuarioRoute');
+const express = require('express');
 
 module.exports = app => {
-  const express = require('express');
-  const app = express();
-
   app.use(bodyParser.urlencoded({extended: false}));
   app.use(bodyParser.json());
 
@@ -19,9 +17,8 @@ module.exports = app => {
     next();
   });
 
-  app.use(usuario);
-
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, '../views'));
 
+  app.use(usuario);
 };
