@@ -24,7 +24,7 @@ module.exports = {
       tipo: {
         type: Sequelize.STRING, 
         allowNull: false,
-        defaultValue: 'normal'
+        defaultValue: 'user'
       },
       createdAt: {
         allowNull: false,

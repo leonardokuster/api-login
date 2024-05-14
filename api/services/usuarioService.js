@@ -1,33 +1,37 @@
 const { v4: uuidv4 } = require('uuid');const bcrypt = require('bcrypt');
 const database = require('../models');
 const transporter = require('../controllers/nodemailer');
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 class UsuarioService {
     async logarUsuario(dto) {
         const { email, senha } = dto;
-
+    
         const usuario = await database.usuarios.findOne({ 
             where: { 
                 email: email 
             } 
         });
-
-        if (!usuario) {
-            throw new Error('Credenciais inválidas')
-        };
     
+        if (!usuario) {
+            throw new Error('Credenciais inválidas');
+        }
+        
         if (!senha) {
-            throw new Error('Senha não fornecida')
+            throw new Error('Senha não fornecida');
+        }
+    
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+    
+        if (!senhaCorreta) {
+            throw new Error('Credenciais inválidas');
         }
 
-        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+        const token = jwt.sign({ usuarioId: usuario.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        if (!senhaCorreta) {
-            throw new Error('Credenciais inválidas')
-        };
-
-        return usuario;
-    };
+        return { usuario, token };
+    }
 
     async cadastrarUsuario(dto) {
         const { nome, email, senha } = dto;

@@ -4,19 +4,13 @@ const usuarioService = new UsuarioService();
 class UsuarioController {
     static async logarUsuario(req, res) {
         const { email, senha } = req.body;
-    
+        
         try {
-            const usuario = await usuarioService.logarUsuario({ email, senha });
-            
-            if (usuario.tipo === 'admin') {
-                res.render('admin', { nome: usuario.nome });
-            } else if (usuario.tipo === 'normal') {
-                res.render('normal', { nome: usuario.nome });
-            } else {
-                return res.status(403).send({ message: 'Usuário inválido.' });
-            }
+            const { usuario, token } = await usuarioService.logarUsuario({ email, senha });
+
+            res.status(201).json({ usuario, token });
         } catch (error) {
-            console.error('Message error: ', error.message);
+            console.error('Erro ao fazer login:', error.message);
             res.status(400).send({ message: error.message });
         }
     };    
