@@ -6,7 +6,6 @@ const AdminController = require('../controllers/adminController');
 adminRoutes.use(adminAuth);
 
 adminRoutes
-    .post('/admin/cadastrar', AdminController.cadastrarUsuario)
     .get('/admin/home', AdminController.index)
     .get('/admin', AdminController.buscarTodosUsuarios)
     .get('/admin/id/:id', AdminController.buscarUsuarioPorId)

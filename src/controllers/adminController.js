@@ -6,26 +6,6 @@ class AdminController {
         return res.status(200).json({ok: 'Bem-vindo administrador'});
     }
 
-    static async cadastrarUsuario(req, res) {
-        const { nome, email, senha, confisenha } = req.body;
-
-        if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "") {
-            throw new Error('Não foi possível realizar seu cadastro, verifique os dados informados.');
-        };
-
-        try {
-            const usuario = await appService.cadastrarUsuario({ nome, email, senha });
-            
-            res.status(201).json( {
-                usuario,
-                message: 'Conta criada com sucesso! Verifique seu e-mail com os dados de login.'
-            });
-        } catch (error) {
-            console.log('Message error: ', error.message);
-            res.status(400).send({ message: error.message });
-        }
-    };
-
     static async buscarTodosUsuarios(req, res) {
         const usuarios = await appService.buscarTodosUsuarios();
         

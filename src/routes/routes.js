@@ -11,4 +11,4 @@ router.use('/collaborator', collaboratorRoutes);
 router.use('/user', userRoutes);
 router.use(publicRoutes);
 
-module.exports = router;
+module.exports = router
