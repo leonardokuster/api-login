@@ -1,10 +1,10 @@
 const { v4: uuidv4 } = require('uuid');const bcrypt = require('bcrypt');
 const database = require('../models');
-const transporter = require('../controllers/nodemailer');
+const transporter = require('../controllers/nodemailerController');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
-class UsuarioService {
+class AppService {
     async logarUsuario(dto) {
         const { email, senha } = dto;
     
@@ -173,4 +173,4 @@ class UsuarioService {
     };
 }
 
-module.exports = UsuarioService
+module.exports = AppService;

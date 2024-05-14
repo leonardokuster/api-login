@@ -1,19 +1,10 @@
-const UsuarioService = require('../services/usuarioService');
-const usuarioService = new UsuarioService();
+const AppService = require('../services/appService');
+const appService = new AppService();
 
-class UsuarioController {
-    static async logarUsuario(req, res) {
-        const { email, senha } = req.body;
-        
-        try {
-            const { usuario, token } = await usuarioService.logarUsuario({ email, senha });
-
-            res.status(201).json({ usuario, token });
-        } catch (error) {
-            console.error('Erro ao fazer login:', error.message);
-            res.status(400).send({ message: error.message });
-        }
-    };    
+class AdminController {
+    static async index(req, res) {
+        return res.status(200).json({ok: 'Bem-vindo administrador'});
+    }
 
     static async cadastrarUsuario(req, res) {
         const { nome, email, senha, confisenha } = req.body;
@@ -23,7 +14,7 @@ class UsuarioController {
         };
 
         try {
-            const usuario = await usuarioService.cadastrarUsuario({ nome, email, senha });
+            const usuario = await appService.cadastrarUsuario({ nome, email, senha });
             
             res.status(201).json( {
                 usuario,
@@ -36,7 +27,7 @@ class UsuarioController {
     };
 
     static async buscarTodosUsuarios(req, res) {
-        const usuarios = await usuarioService.buscarTodosUsuarios();
+        const usuarios = await appService.buscarTodosUsuarios();
         
         res.status(200).json(usuarios);
     };
@@ -45,7 +36,7 @@ class UsuarioController {
         const { id } = req.params;
 
         try {
-            const usuario = await usuarioService.buscarUsuarioPorId(id);
+            const usuario = await appService.buscarUsuarioPorId(id);
             
             res.status(200).json(usuario); 
         } catch (error) {
@@ -58,7 +49,7 @@ class UsuarioController {
         const { id } = req.params;
         
         try {
-            await usuarioService.deletarUsuarioPorId(id);
+            await appService.deletarUsuarioPorId(id);
             
             res.status(200).send({ message: 'Usuário deletado com sucesso!' });
             
@@ -73,7 +64,7 @@ class UsuarioController {
         const { nome, email, senha, tipo } = req.body;
         
         try {
-            const usuario = await usuarioService.editarUsuario({ id, nome, email, senha, tipo });
+            const usuario = await appService.editarUsuario({ id, nome, email, senha, tipo });
             
             res.status(200).json(usuario);
         } catch (error) {
@@ -83,4 +74,4 @@ class UsuarioController {
     };
 }
 
-module.exports = UsuarioController
+module.exports = AdminController
