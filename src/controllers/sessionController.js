@@ -9,7 +9,7 @@ class SessionController {
     static async index(req, res) {
         const { tipo } = req.body;
         let token;
-
+   
         if (tipo === 'admin') {
             token = jwt.sign({ tipo: 'admin' }, adminToken.secret, { expiresIn: adminToken.expiresIn });
         } else if (tipo === 'collaborator') {

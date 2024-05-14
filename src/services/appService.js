@@ -1,4 +1,5 @@
-const { v4: uuidv4 } = require('uuid');const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
 const database = require('../models');
 const transporter = require('../controllers/nodemailerController');
 require('dotenv').config();
@@ -27,7 +28,7 @@ class AppService {
         if (!senhaCorreta) {
             throw new Error('Credenciais inválidas');
         }
-
+ 
         const token = jwt.sign({ usuarioId: usuario.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         return { usuario, token };
