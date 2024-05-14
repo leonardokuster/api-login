@@ -1,4 +1,6 @@
+require('dotenv').config();
+
 module.exports = {
-    secret: 'c0l@borasn3ungasjd',
-    expiresIn: '5d',
+    secret: process.env.COLLABORATOR_SECRET,
+    expiresIn: process.env.COLLABORATOR_EXPIRES,
 };

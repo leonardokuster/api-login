@@ -1,4 +1,6 @@
+require('dotenv').config();
+
 module.exports = {
-    secret: 'jru73huhurfy83has',
-    expiresIn: '5d',
+    secret: process.env.USER_SECRET,
+    expiresIn: process.env.USER_EXPIRES,
 };
