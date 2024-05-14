@@ -3,8 +3,5 @@ const path = require('path');
 module.exports = {
   'config': path.resolve('src', 'config', 'database.js'),
   'models-path': path.resolve('src', 'models'),
-  'migrations-path': path.resolve('src', 'migrations'),
-  'admin-token': path.resolve('src', 'config', 'adminToken.js'),
-  'collaborator-token': path.resolve('src', 'config', 'collaboratorToken.js'),
-  'user-token': path.resolve('src', 'config', 'userToken.js')
+  'migrations-path': path.resolve('src', 'migrations')
 }
