@@ -74,6 +74,8 @@ class AppService {
                 senha: hashedSenha
             });
 
+            const firstName = nome.split(' ')[0];
+
             const info = await transporter.sendMail({
                 from: "Escritório Kuster <l.kusterr@gmail.com>",
                 to: email,
@@ -81,7 +83,7 @@ class AppService {
                 html: `
                 <html>
                 <body>
-                    <h2>Olá <strong>${nome}</strong>,</h2>
+                    <h2>Olá <strong>${firstName}</strong>,</h2>
                     <p>Obrigado por se cadastrar em nosso serviço! Abaixo estão os detalhes da sua conta:</p>
     
                     <ul>
