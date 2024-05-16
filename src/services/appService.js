@@ -35,25 +35,15 @@ class AppService {
     async cadastrarUsuario(dto) {
         const { nome, telefone, email, dataNascimento, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, senha } = dto;
 
-        const cpfCnpjUsuario = await database.usuarios.findOne({
+        const usuarioExistente = await database.usuarios.findOne({
             where: {
-                cpfCnpj: cpfCnpj
+                [database.Sequelize.Op.or]: [{ cpfCnpj }, { email }]
             }
         });
 
-        const emailUsuario = await database.usuarios.findOne({
-            where: {
-                email: email
-            }
-        });
-
-        if (cpfCnpjUsuario) {
-            throw new Error('Este CPF/CNPJ já está cadastrado. Faça login.')
-        };
-        
-        if (emailUsuario) {
-            throw new Error('Este e-mail já está cadastrado. Faça login.')
-        };
+        if (usuarioExistente) {
+            throw new Error('Este CPF/CNPJ ou e-mail já está cadastrado. Faça login.');
+        }
 
         const hashedSenha = await bcrypt.hash(senha, 10);
         
@@ -166,25 +156,24 @@ class AppService {
         };
 
         try {
-            usuario.nome = nome,
-            usuario.email = email,
-            usuario.telefone = telefone,
-            usuario.cpfCnpj = cpfCnpj,
-            usuario.cep = cep,
-            usuario.endereco = endereco,
-            usuario.numeroCasa = numeroCasa,
-            usuario.complementoCasa = complementoCasa,
-            usuario.dataNascimento = dataNascimento,
-            usuario.senha = senha,
-            usuario.tipo = tipo
-
-            await usuario.save()
-
-            return await usuario.reload()
+            if (nome) usuario.nome = nome;
+            if (email) usuario.email = email;
+            if (telefone) usuario.telefone = telefone;
+            if (cpfCnpj) usuario.cpfCnpj = cpfCnpj;
+            if (cep) usuario.cep = cep;
+            if (endereco) usuario.endereco = endereco;
+            if (numeroCasa) usuario.numeroCasa = numeroCasa;
+            if (complementoCasa) usuario.complementoCasa = complementoCasa;
+            if (dataNascimento) usuario.dataNascimento = dataNascimento;
+            if (senha) usuario.senha = await bcrypt.hash(senha, 10);
+            if (tipo) usuario.tipo = tipo;
+    
+            await usuario.save();
+            return usuario;
         } catch (error) {
-            console.error('Message error: ', error.message)
-            throw error
-        };
+            console.error('Erro ao editar usuário:', error.message);
+            throw error;
+        }
     };
 }
 
