@@ -37,14 +37,14 @@ class SessionController {
     };
 
     static async cadastrarUsuario(req, res) {
-        const { nome, email, senha, confisenha } = req.body;
+        const { nome, email, telefone, cep, dataNascimento, senha, confisenha } = req.body;
 
-        if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "") {
+        if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "" || telefone === "" || dataNascimento === "" || cep === "") {
             throw new Error('Não foi possível realizar seu cadastro, verifique os dados informados.');
         };
 
         try {
-            const usuario = await appService.cadastrarUsuario({ nome, email, senha });
+            const usuario = await appService.cadastrarUsuario({ nome, email, telefone, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha });
             
             res.status(201).json( {
                 usuario,
