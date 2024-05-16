@@ -17,6 +17,34 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      telefone: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      cpfCnpj: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      cep: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      endereco: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      numeroCasa: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      complementoCasa: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      dataNascimento: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       senha: {
         type: Sequelize.STRING,
         allowNull: false
