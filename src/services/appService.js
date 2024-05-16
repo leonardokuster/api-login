@@ -35,11 +35,11 @@ class AppService {
     }
 
     async cadastrarUsuario(dto) {
-        const { nome, email, senha } = dto;
+        const { nome, telefone, email, dataNascimento, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, senha } = dto;
 
-        const nomeUsuario = await database.usuarios.findOne({
+        const cpfCnpjUsuario = await database.usuarios.findOne({
             where: {
-                nome: nome
+                cpfCnpj: cpfCnpj
             }
         });
 
@@ -49,8 +49,8 @@ class AppService {
             }
         });
 
-        if (nomeUsuario) {
-            throw new Error('Este nome de usuário já está em uso. Tente outro.')
+        if (cpfCnpjUsuario) {
+            throw new Error('Este CPF/CNPJ já está cadastrado. Faça login.')
         };
         
         if (emailUsuario) {
@@ -64,6 +64,13 @@ class AppService {
                 id: uuidv4(),
                 nome: dto.nome,
                 email: dto.email,
+                telefone: dto.telefone,
+                cpfCnpj: dto.cpfCnpj,
+                cep: dto.cep,
+                endereco: dto.endereco,
+                numeroCasa: dto.numeroCasa,
+                complementoCasa: dto.complementoCasa,
+                dataNascimento: dto.dataNascimento,
                 senha: hashedSenha
             });
 
@@ -108,10 +115,10 @@ class AppService {
         return usuarios
     };
 
-    async buscarUsuarioPorId(id) {
+    async buscarUsuarioPorCpfCnpj(cpfCnpj) {
         const usuario = await database.usuarios.findOne({
             where: {
-                id: id
+                cpfCnpj: cpfCnpj
             }
         });
 
@@ -122,10 +129,10 @@ class AppService {
         return usuario;
     };
 
-    async deletarUsuarioPorId(id) {
+    async deletarUsuarioPorCpfCnpj(cpfCnpj) {
         const usuario = await database.usuarios.findOne({
             where: {
-                id: id
+                cpfCnpj: cpfCnpj
             }
         });
 
@@ -136,7 +143,7 @@ class AppService {
         try {
             await database.usuarios.destroy({
                 where: {
-                    id: id
+                    cpfCnpj: cpfCnpj
                 }
             });
         } catch (error) {
@@ -146,11 +153,11 @@ class AppService {
     };
 
     async editarUsuario(dto) {
-        const { id, nome, email, senha, tipo } = dto;
+        const { id, nome, email, telefone, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha, tipo } = dto;
 
         const usuario = await database.usuarios.findOne({
             where: {
-                id: id
+                cpfCnpj: cpfCnpj
             }
         });
 
@@ -161,6 +168,13 @@ class AppService {
         try {
             usuario.nome = nome,
             usuario.email = email,
+            usuario.telefone = telefone,
+            usuario.cpfCnpj = cpfCnpj,
+            usuario.cep = cep,
+            usuario.endereco = endereco,
+            usuario.numeroCasa = numeroCasa,
+            usuario.complementoCasa = complementoCasa,
+            usuario.dataNascimento = dataNascimento,
             usuario.senha = senha,
             usuario.tipo = tipo
 

@@ -39,7 +39,7 @@ class SessionController {
     static async cadastrarUsuario(req, res) {
         const { nome, email, telefone, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha, confisenha } = req.body;
 
-        if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "" || telefone === "" || cpfCnpj === "" || cep === "" || endereco === "" || numeroCasa === "" || complementoCasa === "" || dataNascimento === "") {
+        if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "" || telefone === "" || cpfCnpj === "" || cep === "" || endereco === "" || dataNascimento === "") {
             throw new Error('Não foi possível realizar seu cadastro, verifique os dados informados.');
         };
 

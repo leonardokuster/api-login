@@ -12,11 +12,11 @@ class CollaboratorController {
         res.status(200).json(usuarios);
     };
 
-    static async buscarUsuarioPorId(req, res) {
-        const { id } = req.params;
+    static async buscarUsuarioPorCpfCnpj(req, res) {
+        const { cpfCnpj } = req.params;
 
         try {
-            const usuario = await appService.buscarUsuarioPorId(id);
+            const usuario = await appService.buscarUsuarioPorCpfCnpj(cpfCnpj);
             
             res.status(200).json(usuario); 
         } catch (error) {
