@@ -28,10 +28,8 @@ class AppService {
         if (!senhaCorreta) {
             throw new Error('Credenciais inválidas');
         }
- 
-        const token = jwt.sign({ usuarioId: usuario.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        return { usuario, token };
+        return { usuario, tipo: usuario.tipo };
     }
 
     async cadastrarUsuario(dto) {

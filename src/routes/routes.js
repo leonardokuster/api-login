@@ -6,9 +6,9 @@ const publicRoutes = require('./publicRoutes');
 
 const router = express.Router();
 
-router.use('/admin', adminRoutes);
-router.use('/collaborator', collaboratorRoutes);
-router.use('/user', userRoutes);
+router.use(adminRoutes);
+router.use(collaboratorRoutes);
+router.use(userRoutes);
 router.use(publicRoutes);
 
 module.exports = router

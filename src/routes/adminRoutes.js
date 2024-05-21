@@ -6,10 +6,9 @@ const AdminController = require('../controllers/adminController');
 adminRoutes.use(adminAuth);
 
 adminRoutes
-    .get('/admin/home', AdminController.index)
-    .get('/admin', AdminController.buscarTodosUsuarios)
-    .get('/admin/id/:id', AdminController.buscarUsuarioPorCpfCnpj)
-    .put('/admin/id/:id', AdminController.editarUsuario)
-    .delete('/admin/id/:id', AdminController.deletarUsuarioPorCpfCnpj)
+    .get('/findUser', AdminController.buscarTodosUsuarios)
+    .get('/findUser/id/:id', AdminController.buscarUsuarioPorCpfCnpj)
+    .put('/modifyUser/id/:id', AdminController.editarUsuario)
+    .delete('/deleteUser/id/:id', AdminController.deletarUsuarioPorCpfCnpj)
 
 module.exports = adminRoutes
