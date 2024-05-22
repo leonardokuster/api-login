@@ -2,10 +2,6 @@ const AppService = require('../services/appService');
 const appService = new AppService();
 
 class CollaboratorController {
-    static async index(req, res) {
-        return res.status(200).json({ok: 'Bem-vindo colaborador'});
-    }
-
     static async buscarTodosUsuarios(req, res) {
         const usuarios = await appService.buscarTodosUsuarios();
         
