@@ -10,9 +10,14 @@ module.exports = async (req, res, next) => {
             return res.status(401).json({ error: 'Token não encontrado' });
         }
 
+        console.log('authHeader-User: ' + authHeader);
+        console.log('userToken-User: ' + userToken.secret);
+
         const [, token] = autHeader.split(' ');
 
         await promisify(jwt.verify)(token, userToken.secret);
+
+        console.log('token-User: ' + token);
 
         return next();
     } catch (error) {

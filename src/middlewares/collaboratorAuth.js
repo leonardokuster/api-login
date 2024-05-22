@@ -10,9 +10,14 @@ module.exports = async (req, res, next) => {
             return res.status(401).json({ error: 'Token não encontrado' });
         }
 
+        console.log('authHeader-Collaborator: ' + authHeader);
+        console.log('collaboratorToken-Collaborator: ' + collaboratorToken.secret);
+
         const [, token] = autHeader.split(' ');
 
         await promisify(jwt.verify)(token, collaboratorToken.secret);
+
+        console.log('token-Collaborator: ' + token);
 
         return next();
     } catch (error) {

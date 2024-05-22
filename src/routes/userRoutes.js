@@ -6,6 +6,6 @@ const UserController = require('../controllers/userController');
 userRoutes.use(userAuth);
 
 userRoutes
-    .get('/user/home', UserController.index)
+    .get('/home', UserController.index)
 
 module.exports = userRoutes

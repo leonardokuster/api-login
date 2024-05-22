@@ -6,7 +6,7 @@ const CollaboratorController = require('../controllers/adminController');
 collaboratorRoutes.use(collaboratorAuth);
 
 collaboratorRoutes
-    .get('/collaborator', CollaboratorController.buscarTodosUsuarios)
-    .get('/collaborator/id/:id', CollaboratorController.buscarUsuarioPorCpfCnpj)
+    .get('/findUser', CollaboratorController.buscarTodosUsuarios)
+    .get('/findUser/id/:id', CollaboratorController.buscarUsuarioPorCpfCnpj)
 
 module.exports = collaboratorRoutes
