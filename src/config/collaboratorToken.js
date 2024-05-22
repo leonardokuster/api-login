@@ -8,5 +8,5 @@ if (!collaboratorToken) {
 
 module.exports = {
     secret: collaboratorToken,
-    expiresIn: '5d',
+    expiresIn: '5d'
 };

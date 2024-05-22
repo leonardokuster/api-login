@@ -8,5 +8,5 @@ if (!userToken) {
 
 module.exports = {
     secret: userToken,
-    expiresIn: '5d',
+    expiresIn: '5d'
 };
