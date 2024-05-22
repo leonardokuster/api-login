@@ -12,6 +12,10 @@ module.exports = async (req, res, next) => {
 
         const [, token] = autHeader.split(' ');
 
+        if (!token) {
+            return res.status(401).json({ error: 'Token malformado' });
+        }
+
         await promisify(jwt.verify)(token, userToken.secret);
 
         return next();

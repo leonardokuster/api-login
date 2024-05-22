@@ -7,10 +7,6 @@ const adminToken = require('../config/adminToken');
 module.exports = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-
-        console.log('adminToken: ' + adminToken.secret);
-        console.log('authHeader: ' + authHeader);
-
         if (!authHeader) {
             return res.status(401).json({ error: 'Token não encontrado' });
         }
@@ -22,8 +18,6 @@ module.exports = async (req, res, next) => {
         }
 
         await promisify(jwt.verify)(token, adminToken.secret);
-
-        console.log('Token verificado com sucesso');
 
         return next();
     } catch (error) {

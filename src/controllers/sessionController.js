@@ -5,10 +5,6 @@ const userToken = require("../config/userToken");
 const AppService = require('../services/appService');
 const appService = new AppService();
 
-console.log('adminToken:', adminToken);
-console.log('collaboratorToken:', collaboratorToken);
-console.log('userToken:', userToken);
-
 class SessionController {
     static async logarUsuario(req, res) {
         const { email, senha } = req.body;
