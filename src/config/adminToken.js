@@ -9,4 +9,4 @@ if (!adminToken) {
 module.exports = {
     secret: adminToken,
     expiresIn: '5d'
-};
+}; 
