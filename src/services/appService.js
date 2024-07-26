@@ -33,16 +33,16 @@ class AppService {
     }
 
     async cadastrarUsuario(dto) {
-        const { nome, telefone, email, dataNascimento, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, senha } = dto;
+        const { nome, email, telefone, cpf, possuiEmpresa, cnpj, nomeEmpresa, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha } = dto;
 
         const usuarioExistente = await database.usuarios.findOne({
             where: {
-                [database.Sequelize.Op.or]: [{ cpfCnpj }, { email }]
+                [database.Sequelize.Op.or]: [{ cpf }, { email }]
             }
         });
 
         if (usuarioExistente) {
-            throw new Error('Este CPF/CNPJ ou e-mail já está cadastrado. Faça login.');
+            throw new Error('Este CPF ou e-mail já está cadastrado. Faça login.');
         }
 
         const hashedSenha = await bcrypt.hash(senha, 10);
@@ -53,7 +53,10 @@ class AppService {
                 nome: dto.nome,
                 email: dto.email,
                 telefone: dto.telefone,
-                cpfCnpj: dto.cpfCnpj,
+                cpf: dto.cpf,
+                possuiEmpresa: dto.possuiEmpresa,
+                cnpj: dto.cnpj,
+                nomeEmpresa: dto.nomeEmpresa,
                 cep: dto.cep,
                 endereco: dto.endereco,
                 numeroCasa: dto.numeroCasa,
@@ -96,6 +99,122 @@ class AppService {
             throw error
         };
     };
+
+    async criarEmpresa(dto) {
+        const { cnpj, nome_fantasia, razao_social, atividades_exercidas, capital_social, endereco, email, telefone, socios } = dto;
+
+        const empresaExistente = await database.empresas.findOne({
+            where: {
+                [database.Sequelize.Op.or]: [{ cnpj }]
+            }
+        });
+        
+        try {
+            const newCompany = await database.empresas.create({
+                id: uuidv4(),
+                cnpj: dto.cnpj,
+                nome_fantasia: dto.nome_fantasia,
+                razao_social: dto.razao_social,
+                atividades_exercidas: dto.atividades_exercidas,
+                capital_social: dto.capital_social,
+                endereco: dto.endereco,
+                email: dto.email,
+                telefone: dto.telefone,
+                socios: dto.socios
+            });
+
+            return newCompany;
+        } catch (error) {
+            console.error('Erro ao cadastrar empresa:', error)
+            throw error
+        };
+    };
+
+    async cadastrarFuncionario(dto) {
+        const {
+            nome, email, telefone, sexo, cor_etnia, data_nascimento, local_nascimento,
+            nacionalidade, cpf, rg, orgao_expedidor, data_rg, cep, endereco, numero_casa,
+            complemento_casa, bairro, cidade, estado, nome_mae, nome_pai, escolaridade,
+            estado_civil, nome_conjuge, pis, data_pis, numero_ct, serie, data_ct,
+            carteira_digital, titulo_eleitoral, zona, secao, qnt_dependente, dependentes,
+            funcao, data_admissao, salario, contrato_experiencia, horarios, insalubridade,
+            periculosidade, quebra_de_caixa, vale_transporte, quantidade_vales
+        } = dto;
+
+        const funcionarioExistente = await database.funcionarios.findOne({
+            where: {
+                [database.Sequelize.Op.or]: [{ cpf }]
+            }
+        });
+        
+        try {
+            const newEmployee = await database.funcionarios.create({
+                id: uuidv4(),
+                nome: dto.nome,
+                email: dto.email,
+                telefone: dto.telefone,
+                sexo: dto.sexo,
+                cor_etnia: dto.cor_etnia,
+                data_nascimento: dto.data_nascimento,
+                local_nascimento: dto.local_nascimento,
+                nacionalidade: dto.nacionalidade,
+                cpf: dto.cpf,
+                rg: dto.rg,
+                orgao_expedidor: dto.orgao_expedidor,
+                data_rg: dto.data_rg,
+                cep: dto.cep,
+                endereco: dto.endereco,
+                numero_casa: dto.numero_casa,
+                complemento_casa: dto.complemento_casa,
+                bairro: dto.bairro,
+                cidade: dto.cidade,
+                estado: dto.estado,
+                nome_mae: dto.nome_mae,
+                nome_pai: dto.nome_pai,
+                escolaridade: dto.escolaridade,
+                estado_civil: dto.estado_civil,
+                nome_conjuge: dto.nome_conjuge,
+                pis: dto.pis,
+                data_pis: dto.data_pis,
+                numero_ct: dto.numero_ct,
+                serie: dto.serie,
+                data_ct: dto.data_ct,
+                carteira_digital: dto.carteira_digital,
+                titulo_eleitoral: dto.titulo_eleitoral,
+                zona: dto.zona,
+                secao: dto.secao,
+                qnt_dependente: dto.qnt_dependente,
+                dependentes: dtp.dependentes,
+                funcao: dto.funcao,
+                data_admissao: dto.data_admissao,
+                salario: dto.salario,
+                contrato_experiencia: dto.contrato_experiencia,
+                horarios: dto.horarios,
+                insalubridade: dto.insalubridade,
+                periculosidade: dto.periculosidade,
+                quebra_de_caixa: dto.quebra_de_caixa,
+                vale_transporte: dto.vale_transporte,
+                quantidade_vales: dto.quantidade_vales
+            });
+
+            return newEmployee;
+        } catch (error) {
+            console.error('Erro ao cadastrar funcionário:', error)
+            throw error
+        };
+    };
+
+
+
+
+
+
+
+
+
+
+
+
 
     async buscarTodosUsuarios() {
         const usuarios = await database.usuarios.findAll()
