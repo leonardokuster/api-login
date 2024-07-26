@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   usuarios.init({
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
     nome: DataTypes.STRING,
     email: DataTypes.STRING,
     telefone: DataTypes.STRING,
@@ -31,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     tipo: DataTypes.STRING,
     empresa_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'empresas',  
         key: 'id',
