@@ -100,7 +100,7 @@ class AppService {
         };
     };
 
-    async criarEmpresa(dto) {
+    async criarEmpresa(dto, usuario_id) {
         const { cnpj, nome_fantasia, razao_social, atividades_exercidas, capital_social, endereco, email, telefone, socios } = dto;
 
         const empresaExistente = await database.empresas.findOne({
@@ -120,8 +120,11 @@ class AppService {
                 endereco: dto.endereco,
                 email: dto.email,
                 telefone: dto.telefone,
-                socios: dto.socios
+                socios: dto.socios,
+                usuario_id
             });
+
+            await database.usuarios.update({ possuiEmpresa: true, empresa_id: newCompany.id }, { where: { id: usuario_id } });
 
             return newCompany;
         } catch (error) {
@@ -130,7 +133,7 @@ class AppService {
         };
     };
 
-    async cadastrarFuncionario(dto) {
+    async cadastrarFuncionario(dto, empresa_id) {
         const {
             nome, email, telefone, sexo, cor_etnia, data_nascimento, local_nascimento,
             nacionalidade, cpf, rg, orgao_expedidor, data_rg, cep, endereco, numero_casa,
@@ -146,6 +149,10 @@ class AppService {
                 [database.Sequelize.Op.or]: [{ cpf }]
             }
         });
+
+        if (funcionarioExistente) {
+            throw new Error('Funcionário já cadastrado.')
+        };
         
         try {
             const newEmployee = await database.funcionarios.create({
@@ -194,7 +201,8 @@ class AppService {
                 periculosidade: dto.periculosidade,
                 quebra_de_caixa: dto.quebra_de_caixa,
                 vale_transporte: dto.vale_transporte,
-                quantidade_vales: dto.quantidade_vales
+                quantidade_vales: dto.quantidade_vales,
+                empresa_id
             });
 
             return newEmployee;
@@ -204,12 +212,116 @@ class AppService {
         };
     };
 
+    async buscarEmpresa(usuario_id) {
+        const usuario = await database.usuarios.findByPk(usuario_id, { include: database.empresas });
 
+        if (!usuario || !usuario.empresa_id) {
+            throw new Error('Nenhuma empresa cadastrada');
+        }
 
+        return usuario.Empresa;
+    };
 
+    async editarEmpresa(dto) {
+        const { cnpj, nome_fantasia, razao_social, atividades_exercidas, capital_social, endereco, email, telefone, socios } = dto;
 
+        const company = await database.empresas.findOne({where: { cnpj: cnpj }});
 
+        if (!company) {
+            throw new Error('Nenhuma empresa encontrada.')
+        };
 
+        try {
+            if (cnpj) empresas.cnpj = cnpj;
+            if (nome_fantasia) empresas.nome_fantasia = nome_fantasia;
+            if (razao_social) empresas.razao_social = razao_social;
+            if (atividades_exercidas) empresas.atividades_exercidas = atividades_exercidas;
+            if (capital_social) empresas.capital_social = capital_social;
+            if (endereco) empresas.endereco = endereco;
+            if (email) empresas.email = email;
+            if (telefone) empresas.telefone = telefone;
+            if (socios) empresas.socios = socios;
+    
+            await empresas.save();
+            return company;
+        } catch (error) {
+            console.error('Erro ao editar empresa:', error.message);
+            throw error;
+        }
+    };
+
+    async editarFuncionario(dto) {
+        const {
+            nome, email, telefone, sexo, cor_etnia, data_nascimento, local_nascimento,
+            nacionalidade, cpf, rg, orgao_expedidor, data_rg, cep, endereco, numero_casa,
+            complemento_casa, bairro, cidade, estado, nome_mae, nome_pai, escolaridade,
+            estado_civil, nome_conjuge, pis, data_pis, numero_ct, serie, data_ct,
+            carteira_digital, titulo_eleitoral, zona, secao, qnt_dependente, dependentes,
+            funcao, data_admissao, salario, contrato_experiencia, horarios, insalubridade,
+            periculosidade, quebra_de_caixa, vale_transporte, quantidade_vales
+        } = dto;
+
+        const employee = await database.funcionarios.findOne({where: { cpf: cpf }});
+
+        if (!employee) {
+            throw new Error('Funcionário não encontrado.')
+        };
+
+        try {
+            if (nome) funcionarios.nome = nome;
+            if (email) funcionarios.email = email;
+            if (telefone) funcionarios.telefone = telefone;
+            if (sexo) funcionarios.sexo = sexo;
+            if (cor_etnia) funcionarios.cor_etnia = cor_etnia;
+            if (data_nascimento) funcionarios.data_nascimento = data_nascimento;
+            if (local_nascimento) funcionarios.local_nascimento = local_nascimento;
+            if (nacionalidade) funcionarios.nacionalidade = nacionalidade;
+            if (cpf) funcionarios.cpf = cpf;
+            if (rg) funcionarios.rg = rg;
+            if (orgao_expedidor) funcionarios.orgao_expedidor = orgao_expedidor;
+            if (data_rg) funcionarios.data_rg = data_rg;
+            if (cep) funcionarios.cep = cep;
+            if (endereco) funcionarios.endereco = endereco;
+            if (numero_casa) funcionarios.numero_casa = numero_casa;
+            if (complemento_casa) funcionarios.complemento_casa = complemento_casa;
+            if (bairro) funcionarios.bairro = bairro;
+            if (cidade) funcionarios.cidade = cidade;
+            if (estado) funcionarios.estado = estado;
+            if (nome_mae) funcionarios.nome_mae = nome_mae;
+            if (nome_pai) funcionarios.nome_pai = nome_pai;
+            if (escolaridade) funcionarios.escolaridade = escolaridade;
+            if (estado_civil) funcionarios.estado_civil = estado_civil;
+            if (nome_conjuge) funcionarios.nome_conjuge = nome_conjuge;
+            if (pis) funcionarios.pis = pis;
+            if (data_pis) funcionarios.data_pis = data_pis;
+            if (numero_ct) funcionarios.numero_ct = numero_ct;
+            if (serie) funcionarios.serie = serie;
+            if (data_ct) funcionarios.data_ct = data_ct;
+            if (carteira_digital) funcionarios.carteira_digital = carteira_digital;
+            if (titulo_eleitoral) funcionarios.titulo_eleitoral = titulo_eleitoral;
+            if (zona) funcionarios.zona = zona;
+            if (secao) funcionarios.secao = secao;
+            if (qnt_dependente) funcionarios.qnt_dependente = qnt_dependente;
+            if (dependentes) funcionarios.dependentes = dependentes;
+            if (funcao) funcionarios.funcao = funcao;
+            if (data_admissao) funcionarios.data_admissao = data_admissao;
+            if (salario) funcionarios.salario = salario;
+            if (contrato_experiencia) funcionarios.contrato_experiencia = contrato_experiencia;
+            if (horarios) funcionarios.horarios = horarios;
+            if (insalubridade) funcionarios.insalubridade = insalubridade;
+            if (periculosidade) funcionarios.periculosidade = periculosidade;
+            if (quebra_de_caixa) funcionarios.quebra_de_caixa = quebra_de_caixa;
+            if (vale_transporte) funcionarios.vale_transporte = vale_transporte;
+            if (quantidade_vales) funcionarios.quantidade_vales = quantidade_vales;
+
+            await empresas.save();
+            return company;
+        } catch (error) {
+            console.error('Erro ao editar empresa:', error.message);
+            throw error;
+        }
+    };
+    
 
 
 
@@ -259,39 +371,7 @@ class AppService {
         };
     };
 
-    async editarUsuario(dto) {
-        const { id, nome, email, telefone, cpfCnpj, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha, tipo } = dto;
-
-        const usuario = await database.usuarios.findOne({
-            where: {
-                cpfCnpj: cpfCnpj
-            }
-        });
-
-        if (!usuario) {
-            throw new Error('Usuário informado não cadastrado!')
-        };
-
-        try {
-            if (nome) usuario.nome = nome;
-            if (email) usuario.email = email;
-            if (telefone) usuario.telefone = telefone;
-            if (cpfCnpj) usuario.cpfCnpj = cpfCnpj;
-            if (cep) usuario.cep = cep;
-            if (endereco) usuario.endereco = endereco;
-            if (numeroCasa) usuario.numeroCasa = numeroCasa;
-            if (complementoCasa) usuario.complementoCasa = complementoCasa;
-            if (dataNascimento) usuario.dataNascimento = dataNascimento;
-            if (senha) usuario.senha = await bcrypt.hash(senha, 10);
-            if (tipo) usuario.tipo = tipo;
     
-            await usuario.save();
-            return usuario;
-        } catch (error) {
-            console.error('Erro ao editar usuário:', error.message);
-            throw error;
-        }
-    };
 }
 
 module.exports = AppService;

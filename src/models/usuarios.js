@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define association here
+      usuarios.hasOne(models.empresas, { foreignKey: 'usuario_id' });
     }
   }
   usuarios.init({
@@ -27,7 +28,15 @@ module.exports = (sequelize, DataTypes) => {
     complementoCasa: DataTypes.STRING,
     dataNascimento: DataTypes.STRING,
     senha: DataTypes.STRING,
-    tipo: DataTypes.STRING
+    tipo: DataTypes.STRING,
+    empresa_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'empresas',  
+        key: 'id',
+      },
+    },
   }, {
     sequelize,
     modelName: 'usuarios',
