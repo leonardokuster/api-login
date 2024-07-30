@@ -1,14 +1,10 @@
 'use strict';
 const { Model } = require('sequelize');
-const usuarios = require('./usuarios');
-const funcionarios = require('./funcionarios');
 
 module.exports = (sequelize, DataTypes) => {
   class empresas extends Model {
     static associate(models) {
-      // Define association here
       empresas.belongsTo(models.usuarios, {foreignKey: 'usuario_id'});
-
       empresas.hasMany(models.funcionarios, { foreignKey: 'empresa_id' });
     }
   }
@@ -18,15 +14,42 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    nome: DataTypes.STRING,
-    cnpj: DataTypes.STRING,
-    razao_social: DataTypes.STRING,
-    atividades_exercidas: DataTypes.STRING,
-    capital_social: DataTypes.DECIMAL,
-    endereco: DataTypes.STRING,
-    email: DataTypes.STRING,
-    telefone: DataTypes.STRING,
-    nome_socios: DataTypes.JSONB,
+    cnpj: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    nome_fantasia: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    razao_social: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    atividades_exercidas: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    capital_social: {
+      type: DataTypes.STRING, 
+      allowNull: false
+    },
+    endereco: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    telefone: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    nome_socios: {
+      type: DataTypes.STRING, 
+      allowNull: false
+    },
     usuario_id: {
       type: DataTypes.UUID,
       allowNull: true,
@@ -38,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'empresas', 
+    timestamps: false
   });
   return empresas;
 };

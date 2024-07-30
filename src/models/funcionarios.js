@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // Define association here
       funcionarios.belongsTo(models.empresas, { foreignKey: 'empresa_id' });
+      funcionarios.hasMany(models.dependentes, { foreignKey: 'funcionario_id' });
     }
   }
   funcionarios.init({
@@ -19,51 +20,178 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    nome: DataTypes.STRING,
-    email: DataTypes.STRING,
-    telefone: DataTypes.STRING,
-    sexo: DataTypes.STRING,
-    cor_etnia: DataTypes.STRING,
-    data_nascimento: DataTypes.DATE,
-    local_nascimento: DataTypes.STRING,
-    nacionalidade: DataTypes.STRING,
-    cpf: DataTypes.STRING,
-    rg: DataTypes.STRING,
-    orgao_expedidor: DataTypes.STRING,
-    data_rg: DataTypes.DATE,
-    cep: DataTypes.STRING,
-    endereco: DataTypes.STRING,
-    numero_casa: DataTypes.STRING,
-    complemento_casa: DataTypes.STRING,
-    bairro: DataTypes.STRING,
-    cidade: DataTypes.STRING,
-    estado: DataTypes.STRING,
-    nome_mae: DataTypes.STRING,
-    nome_pai: DataTypes.STRING,
-    estado_civil: DataTypes.STRING,
-    nome_conjuge: DataTypes.STRING,
-    qnt_dependente: DataTypes.INTEGER,
-    dependentes: DataTypes.JSONB,
-    escolaridade: DataTypes.STRING,
-    pis: DataTypes.STRING,
-    data_pis: DataTypes.DATE,
-    numero_ct: DataTypes.STRING,
-    serie: DataTypes.STRING,
-    data_ct: DataTypes.DATE,
-    carteira_digital: DataTypes.BOOLEAN,
-    titulo_eleitoral: DataTypes.STRING,
-    zona: DataTypes.STRING,
-    secao: DataTypes.STRING,
-    funcao: DataTypes.STRING,
-    data_admissao: DataTypes.DATE,
-    salario: DataTypes.DECIMAL,
-    contrato_experiencia: DataTypes.STRING,
-    horarios: DataTypes.STRING,
-    insalubridade: DataTypes.BOOLEAN,
-    periculosidade: DataTypes.BOOLEAN,
-    quebra_de_caixa: DataTypes.BOOLEAN,
-    vale_transporte: DataTypes.BOOLEAN,
-    quantidade_vales: DataTypes.INTEGER,
+    nome: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    telefone: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    sexo: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    cor_etnia: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    data_nascimento: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    local_nascimento: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    nacionalidade: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    cpf: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    rg: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    orgao_expedidor: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    data_rg: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    cep: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    endereco: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    numero_casa: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    complemento_casa: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    bairro: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    cidade: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    estado: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    nome_mae: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    nome_pai: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    estado_civil: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    nome_conjuge: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    qnt_dependente: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    escolaridade: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    pis: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    numero_ct: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    serie: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    data_ct: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    carteira_digital: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    titulo_eleitoral: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    zona: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    secao: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    funcao: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    data_admissao: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    salario: {
+      type: DataTypes.DECIMAL,
+      allowNull: false
+    },
+    contrato_experiencia: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    horarios: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    insalubridade: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    periculosidade: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    quebra_de_caixa: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    vale_transporte: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    quantidade_vales: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     empresa_id: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -75,6 +203,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'funcionarios', 
+    timestamps: false
   });
   return funcionarios;
 };
