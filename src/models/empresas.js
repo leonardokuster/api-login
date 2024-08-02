@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       empresas.belongsTo(models.usuarios, {foreignKey: 'usuario_id'});
       empresas.hasMany(models.funcionarios, { foreignKey: 'empresa_id' });
+      empresas.hasMany(models.socios, { foreignKey: 'empresa_id' });
     }
   }
   empresas.init({
@@ -18,36 +19,48 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nome_fantasia: {
+    nomeFantasia: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    razao_social: {
+    razaoSocial: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    atividades_exercidas: {
+    atividadesExercidas: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    capital_social: {
+    capitalSocial: {
       type: DataTypes.STRING, 
+      allowNull: false
+    },
+    cep: {
+      type: DataTypes.STRING,
       allowNull: false
     },
     endereco: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    email: {
+    numeroEmpresa: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    telefone: {
+    complementoEmpresa: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nome_socios: {
-      type: DataTypes.STRING, 
+    emailEmpresa: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    telefoneEmpresa: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    qntSocios: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     usuario_id: {

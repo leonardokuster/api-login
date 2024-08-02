@@ -3,23 +3,27 @@ const appService = new AppService();
 
 class CompanyController {
     static async criarEmpresa(req, res) {
-        const { cnpj, nome_fantasia, razao_social, atividades_exercidas, capital_social, endereco, email, telefone, nome_socios, usuario_id } = req.body;
+        const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios, usuario_id } = req.body;
     
-        if (!cnpj || !nome_fantasia || !razao_social || !atividades_exercidas || !capital_social || !endereco || !email || !telefone || !nome_socios || !usuario_id) {
+        if (!cnpj || !nomeFantasia || !razaoSocial || !atividadesExercidas || !capitalSocial || !cep || !endereco || !numeroEmpresa || !complementoEmpresa || !emailEmpresa || !telefoneEmpresa || !nomeSocio || !usuario_id) {
             return res.status(400).json({ message: 'Dados incompletos para cadastro da empresa.' });
         }
     
         try {
             const newCompany = await appService.criarEmpresa({
                 cnpj,
-                nome_fantasia,
-                razao_social,
-                atividades_exercidas,
-                capital_social,
+                nomeFantasia,
+                razaoSocial,
+                atividadesExercidas,
+                capitalSocial,
+                cep,
                 endereco,
-                email,
-                telefone,
-                nome_socios
+                numeroEmpresa,
+                complementoEmpresa,
+                emailEmpresa,
+                telefoneEmpresa,
+                qntSocios,
+                socios,
             }, usuario_id);
     
             res.status(201).json({
@@ -35,46 +39,42 @@ class CompanyController {
         const usuario_id = req.params.usuario_id;
     
         try {
-            const usuario = await appService.buscarUsuario(usuario_id);
+            console.log(`Iniciando busca de empresa para o usuário: ${usuario_id}`);
+            const empresa = await appService.buscarEmpresa(usuario_id);
     
-            if (!usuario) {
-                return res.status(404).json({ message: 'Usuário não encontrado' });
-            }
-    
-            if (!usuario.possuiEmpresa) {
-                return res.status(404).json({ message: 'Usuário não possui uma empresa' });
-            }
-    
-            const company = await appService.buscarEmpresa(usuario.empresa_id);
-    
-            if (!company) {
+            if (!empresa) {
+                console.log(`Empresa não encontrada para o usuário: ${usuario_id}`);
                 return res.status(404).json({ message: 'Empresa não encontrada' });
             }
     
-            res.status(200).json(company);
+            console.log(`Empresa encontrada para o usuário: ${usuario_id}`);
+            res.status(200).json(empresa);
         } catch (error) {
             console.error('Erro ao buscar empresa:', error);
             res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
         }
-    };
-    
+    };   
 
     static async editarEmpresa(req, res) {
         const empresa_id = req.params.id;
-        const { cnpj, nome_fantasia, razao_social, atividades_exercidas, capital_social, endereco, email, telefone, nome_socios } = req.body;
+        const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios: sociosData } = req.body;
         
         try {
             const company = await appService.editarEmpresa({
                 id: empresa_id,
                 cnpj,
-                nome_fantasia,
-                razao_social,
-                atividades_exercidas,
-                capital_social,
+                nomeFantasia,
+                razaoSocial,
+                atividadesExercidas,
+                capitalSocial,
+                cep,
                 endereco,
-                email,
-                telefone,
-                nome_socios
+                numeroEmpresa,
+                complementoEmpresa,
+                emailEmpresa,
+                telefoneEmpresa,
+                qntSocios,
+                socios,
             });
             
             res.status(200).json(company);

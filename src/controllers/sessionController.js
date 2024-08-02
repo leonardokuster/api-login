@@ -32,15 +32,25 @@ class SessionController {
     };
 
     static async cadastrarUsuario(req, res) {
-        const { nome, email, telefone, cpf, possuiEmpresa, cnpj, nomeEmpresa, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha, confisenha } = req.body;
-
-        if (senha !== confisenha || nome === "" || email === "" || senha === "" || confisenha === "" || telefone === "" || cpf === "" || cep === "" || endereco === "" || dataNascimento === "") {
-            throw new Error('Não foi possível realizar seu cadastro, verifique os dados informados.');
-        };
-
+        const {
+            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa,
+            cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
+            endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
+            qntSocios, socios, senha, confisenha
+        } = req.body;
+    
+        if (senha !== confisenha || !nome || !emailPessoal || !senha || !confisenha || !telefonePessoal || !cpf || !dataNascimento) {
+            return res.status(400).send({ message: 'Não foi possível realizar seu cadastro, verifique os dados informados.' });
+        }
+    
         try {
-            const usuario = await appService.cadastrarUsuario({ nome, email, telefone, cpf, possuiEmpresa, cnpj, nomeEmpresa, cep, endereco, numeroCasa, complementoCasa, dataNascimento, senha });
-            
+            const usuario = await appService.cadastrarUsuario({
+                nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa,
+                cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
+                endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
+                qntSocios, socios, senha
+            });
+    
             res.status(201).json({
                 usuario,
                 message: 'Conta criada com sucesso! Verifique seu e-mail com os dados de login.'
@@ -48,7 +58,7 @@ class SessionController {
         } catch (error) {
             res.status(400).send({ message: error.message });
         }
-    };
+    };    
 }
 
 module.exports = SessionController

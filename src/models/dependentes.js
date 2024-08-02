@@ -19,20 +19,20 @@ module.exports = (sequelize) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    nomedependente: {
+    nomeDependente: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    datanascimentodependente: {
+    dataNascimentoDependente: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    cpfdependente: {
+    cpfDependente: {
       type: DataTypes.STRING(14),
       unique: true,
       allowNull: false,
     },
-    localnascimentodependente: {
+    localNascimentoDependente: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },

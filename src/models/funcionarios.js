@@ -36,15 +36,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    cor_etnia: {
+    corEtnia: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    data_nascimento: {
+    dataNascimento: {
       type: DataTypes.DATE,
       allowNull: false
     },
-    local_nascimento: {
+    localNascimento: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -60,11 +60,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    orgao_expedidor: {
+    orgaoExpedidor: {
       type: DataTypes.STRING,
       allowNull: true
     },
-    data_rg: {
+    dataRg: {
       type: DataTypes.DATE,
       allowNull: true
     },
@@ -76,11 +76,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    numero_casa: {
+    numeroCasa: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    complemento_casa: {
+    complementoCasa: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -96,23 +96,23 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nome_mae: {
+    nomeMae: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nome_pai: {
+    nomePai: {
       type: DataTypes.STRING,
       allowNull: true
     },
-    estado_civil: {
+    estadoCivil: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nome_conjuge: {
+    nomeConjuge: {
       type: DataTypes.STRING,
       allowNull: true
     },
-    qnt_dependente: {
+    qntDependente: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -124,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    numero_ct: {
+    numeroCt: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -132,15 +132,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    data_ct: {
+    dataCt: {
       type: DataTypes.DATE,
       allowNull: false
     },
-    carteira_digital: {
+    carteiraDigital: {
       type: DataTypes.BOOLEAN,
       allowNull: true
     },
-    titulo_eleitoral: {
+    tituloEleitoral: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -156,7 +156,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    data_admissao: {
+    dataAdmissao: {
       type: DataTypes.DATE,
       allowNull: false
     },
@@ -164,7 +164,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       allowNull: false
     },
-    contrato_experiencia: {
+    contratoExperiencia: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -180,15 +180,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: true
     },
-    quebra_de_caixa: {
+    quebraDeCaixa: {
       type: DataTypes.BOOLEAN,
       allowNull: true
     },
-    vale_transporte: {
+    valeTransporte: {
       type: DataTypes.BOOLEAN,
       allowNull: true
     },
-    quantidade_vales: {
+    quantidadeVales: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
