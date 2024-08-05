@@ -204,17 +204,15 @@ class AppService {
                 { where: { id: usuario_id }, transaction: t } 
             );
     
-            if (Array.isArray(sociosData)) {
-                for (const socioData of sociosData) {
-                    await database.socios.create({
-                        id: uuidv4(),
-                        nomeSocio: socioData.nomeSocio,
-                        cpfSocio: socioData.cpfSocio,
-                        emailSocio: socioData.emailSocio,
-                        telefoneSocio: socioData.telefoneSocio,
-                        empresa_id: newCompany.id
-                    }, { transaction: t });
-                }
+            for (const socioData of sociosData) {
+                await database.socios.create({
+                    id: uuidv4(),
+                    nomeSocio: socioData.nomeSocio,
+                    cpfSocio: socioData.cpfSocio,
+                    emailSocio: socioData.emailSocio,
+                    telefoneSocio: socioData.telefoneSocio,
+                    empresa_id: newCompany.id
+                }, { transaction: t });
             }
     
             await t.commit();
@@ -381,7 +379,7 @@ class AppService {
                     await database.dependentes.create({
                         id: uuidv4(),
                         nomeDependente: dependenteData.nomeDependente,
-                        nascimentoDependente: dependenteData.nascimentoDependente,
+                        dataNascimentoDependente: dependenteData.dataNascimentoDependente,
                         cpfDependente: dependenteData.cpfDependente,
                         localNascimentoDependente: dependenteData.localNascimentoDependente,
                         funcionario_id: newEmployee.id
@@ -397,7 +395,7 @@ class AppService {
             console.error('Erro ao cadastrar funcionário:', error);
             throw error;
         }
-    };    
+    };   
     
     async editarFuncionario(dto) {
         const {

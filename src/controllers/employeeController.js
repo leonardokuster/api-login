@@ -11,10 +11,10 @@ class EmployeeController {
             estadoCivil, nomeConjuge, pis, numeroCt, serie, dataCt,
             carteiraDigital, tituloEleitoral, zona, secao, qntDependente, dependentes,
             funcao, dataAdmissao, salario, contratoExperiencia, horarios, insalubridade,
-            periculosidade, quebraDeCaixa, valeTransporte, quantidadeVales
+            periculosidade, quebraDeCaixa, valeTransporte, quantidadeVales, empresa_id
         } = req.body;
 
-        const { empresa_id } = req.params;
+        console.log('Dados recebidos:', req.body);
 
         if (!empresa_id) {
             return res.status(400).json({ message: 'ID da empresa não informado.' });

@@ -4,8 +4,10 @@ const appService = new AppService();
 class CompanyController {
     static async criarEmpresa(req, res) {
         const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios, usuario_id } = req.body;
+
+        console.log('Dados recebidos:', req.body);
     
-        if (!cnpj || !nomeFantasia || !razaoSocial || !atividadesExercidas || !capitalSocial || !cep || !endereco || !numeroEmpresa || !complementoEmpresa || !emailEmpresa || !telefoneEmpresa || !nomeSocio || !usuario_id) {
+        if (!cnpj || !nomeFantasia || !razaoSocial || !atividadesExercidas || !capitalSocial || !cep || !endereco || !numeroEmpresa || !emailEmpresa || !telefoneEmpresa) {
             return res.status(400).json({ message: 'Dados incompletos para cadastro da empresa.' });
         }
     
