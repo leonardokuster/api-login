@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     senha: DataTypes.STRING,
     tipo: DataTypes.STRING,
     possuiEmpresa: DataTypes.STRING,
+    qntEmpresas: DataTypes.INTEGER,
     empresa_id: {
       type: DataTypes.UUID,
       allowNull: true,

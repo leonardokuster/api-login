@@ -33,8 +33,7 @@ class SessionController {
 
     static async cadastrarUsuario(req, res) {
         const {
-            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa,
-            cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
+            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa, cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
             endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
             qntSocios, socios, senha, confisenha
         } = req.body;
@@ -45,7 +44,7 @@ class SessionController {
     
         try {
             const usuario = await appService.cadastrarUsuario({
-                nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa,
+                nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa, qntEmpresas: possuiEmpresa ? 1 : 0,
                 cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
                 endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
                 qntSocios, socios, senha

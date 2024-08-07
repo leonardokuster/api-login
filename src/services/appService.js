@@ -46,7 +46,7 @@ class AppService {
 
     async cadastrarUsuario(dto) {
         const {
-            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa,
+            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa, qntEmpresas,
             cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
             endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
             qntSocios, socios: sociosData, senha
@@ -86,6 +86,7 @@ class AppService {
                 cpf,
                 dataNascimento,
                 possuiEmpresa,
+                qntEmpresas: possuiEmpresa ? qntEmpresas + 1 : qntEmpresas,
                 senha: hashedSenha
             }, { transaction: t });
     
@@ -183,6 +184,11 @@ class AppService {
         }
     
         try {
+            const usuario = await database.usuarios.findByPk(usuario_id);
+            if (!usuario) {
+                throw new Error('Usuário não encontrado');
+            }
+
             const newCompany = await database.empresas.create({
                 id: uuidv4(),
                 cnpj,
@@ -201,7 +207,7 @@ class AppService {
             }, { transaction: t });
     
             await database.usuarios.update(
-                { possuiEmpresa: true, empresa_id: newCompany.id },
+                { possuiEmpresa: true, qntEmpresas: usuario.qntEmpresas + 1, empresa_id: newCompany.id },
                 { where: { id: usuario_id }, transaction: t } 
             );
     
