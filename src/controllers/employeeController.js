@@ -24,35 +24,14 @@ class EmployeeController {
             return res.status(400).json({ message: 'Não foi possível cadastrar funcionário, verifique os dados informados.' });
         };
 
-        const formatDate = date => {
-            return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
-        };
-
-        const formattedDataNascimento = formatDate(dataNascimento);
-        const formattedDataRg = dataRg ? formatDate(dataRg) : null;
-        const formattedDataCt = formatDate(dataCt);
-        const formattedDataAdmissao = formatDate(dataAdmissao);
-
-        if (dependentes) {
-            if (!Array.isArray(dependentes)) {
-                return res.status(400).json({ message: 'Dependentes devem ser um array.' });
-            }
-            for (const dependente of dependentes) {
-                const { nomeDependente, dataNascimentoDependente, cpfDependente, localNascimentoDependente } = dependente;
-                if (!nomeDependente || !dataNascimentoDependente || !cpfDependente || !localNascimentoDependente) {
-                    return res.status(400).json({ message: 'Dados dos dependentes estão incompletos.' });
-                }
-            }
-        };
-
         try {
             const newEmployee = await appService.cadastrarFuncionario({
-                nome, email, telefone, sexo, corEtnia, dataNascimento: formattedDataNascimento, localNascimento,
-                nacionalidade, cpf, rg, orgaoExpedidor, dataRg: formattedDataRg, cep, endereco, numeroCasa,
+                nome, email, telefone, sexo, corEtnia, dataNascimento, localNascimento,
+                nacionalidade, cpf, rg, orgaoExpedidor, dataRg, cep, endereco, numeroCasa,
                 complementoCasa, bairro, cidade, estado, nomeMae, nomePai, escolaridade,
-                estadoCivil, nomeConjuge, pis, numeroCt, serie, dataCt: formattedDataCt,
+                estadoCivil, nomeConjuge, pis, numeroCt, serie, dataCt,
                 carteiraDigital, tituloEleitoral, zona, secao, qntDependente, dependentes,
-                funcao, dataAdmissao: formattedDataAdmissao, salario, contratoExperiencia, horarios, insalubridade,
+                funcao, dataAdmissao, salario, contratoExperiencia, horarios, insalubridade,
                 periculosidade, quebraDeCaixa, valeTransporte, quantidadeVales
             }, empresa_id);
 
@@ -61,8 +40,8 @@ class EmployeeController {
                 message: 'Funcionário registrado com sucesso!'
             });
         } catch (error) {
-            console.error('Erro ao cadastrar funcionário:', error);
-            res.status(400).json({ message: 'Erro ao registrar funcionário', error });
+            console.error('Erro ao cadastrar funcionário no controller:', error);
+            res.status(500).json({ message: 'Erro ao cadastrar funcionário', details: error.message });
         }
     };
 

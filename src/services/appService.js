@@ -5,6 +5,7 @@ const transporter = require('../controllers/nodemailerController');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const { sequelize } = require('../models');
+const moment = require('moment');
 
 class AppService {
     async logarUsuario(dto) {
@@ -313,10 +314,6 @@ class AppService {
     
         const t = await sequelize.transaction();
     
-        if (dependentesData && !Array.isArray(dependentesData)) {
-            throw new Error('Dependentes devem ser um array.');
-        }
-    
         const funcionarioExistente = await database.funcionarios.findOne({
             where: { cpf }
         });
@@ -324,6 +321,27 @@ class AppService {
         if (funcionarioExistente) {
             throw new Error('Funcionário já cadastrado.');
         }
+
+        const formatSalario = salario => salario.replace(/[^\d,]/g, '').replace(',', '.');
+
+        const formattedSalario = formatSalario(salario);
+
+        const formatDate = (date) => {
+            const formats = ['YYYY-MM-DD', 'DD/MM/YYYY', 'MM/DD/YYYY'];
+        
+            let formattedDate = moment(date, formats, true);
+            
+            if (!formattedDate.isValid()) {
+                formattedDate = moment(date);  
+            }
+            
+            return formattedDate.isValid() ? formattedDate.format('YYYY-MM-DD') : '';
+        };
+
+        const formattedDataNascimento = formatDate(dataNascimento);
+        const formattedDataCt = formatDate(dataCt);
+        const formattedDataRg = formatDate(dataRg);
+        const formattedDataAdmissao = formatDate(dataAdmissao);
     
         try {
             const newEmployee = await database.funcionarios.create({
@@ -333,13 +351,13 @@ class AppService {
                 telefone,
                 sexo,
                 corEtnia,
-                dataNascimento,
+                dataNascimento: formattedDataNascimento,
                 localNascimento,
                 nacionalidade,
                 cpf,
                 rg,
                 orgaoExpedidor,
-                dataRg,
+                dataRg: formattedDataRg,
                 cep,
                 endereco,
                 numeroCasa,
@@ -355,15 +373,15 @@ class AppService {
                 pis,
                 numeroCt,
                 serie,
-                dataCt,
+                dataCt: formattedDataCt,
                 carteiraDigital,
                 tituloEleitoral,
                 zona,
                 secao,
                 qntDependente,
                 funcao,
-                dataAdmissao,
-                salario,
+                dataAdmissao: formattedDataAdmissao,
+                salario: formattedSalario,
                 contratoExperiencia,
                 horarios,
                 insalubridade,
@@ -373,18 +391,16 @@ class AppService {
                 quantidadeVales,
                 empresa_id
             }, { transaction: t });
-    
-            if (Array.isArray(dependentesData)) {
-                for (const dependenteData of dependentesData) {
-                    await database.dependentes.create({
-                        id: uuidv4(),
-                        nomeDependente: dependenteData.nomeDependente,
-                        dataNascimentoDependente: dependenteData.dataNascimentoDependente,
-                        cpfDependente: dependenteData.cpfDependente,
-                        localNascimentoDependente: dependenteData.localNascimentoDependente,
-                        funcionario_id: newEmployee.id
-                    }, { transaction: t });
-                }
+
+            for (const dependenteData of dependentesData) {
+                await database.dependentes.create({
+                    id: uuidv4(),
+                    nomeDependente: dependenteData.nomeDependente,
+                    dataNascimentoDependente: dependenteData.dataNascimentoDependente,
+                    cpfDependente: dependenteData.cpfDependente,
+                    localNascimentoDependente: dependenteData.localNascimentoDependente,
+                    funcionario_id: newEmployee.id
+                }, { transaction: t });
             }
     
             await t.commit();

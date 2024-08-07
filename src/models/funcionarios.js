@@ -3,13 +3,8 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class funcionarios extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
-      // Define association here
       funcionarios.belongsTo(models.empresas, { foreignKey: 'empresa_id' });
       funcionarios.hasMany(models.dependentes, { foreignKey: 'funcionario_id' });
     }
@@ -41,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     dataNascimento: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     localNascimento: {
@@ -65,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     dataRg: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: true
     },
     cep: {
@@ -133,7 +128,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     dataCt: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     carteiraDigital: {
@@ -157,7 +152,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     dataAdmissao: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     salario: {
