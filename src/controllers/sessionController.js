@@ -58,6 +58,23 @@ class SessionController {
             res.status(400).send({ message: error.message });
         }
     };    
+
+    static async buscarUsuario(req, res) {
+        const usuario_id = req.params.usuario_id;
+    
+        try {
+            const usuario = await appService.buscarUsuario(usuario_id);
+    
+            if (!usuario) {
+                return res.status(404).json({ message: 'Usuário não encontrada' });
+            }
+    
+            res.status(200).json(usuario);
+        } catch (error) {
+            console.error('Erro ao buscar empresa:', error);
+            res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
+        }
+    };   
 }
 
 module.exports = SessionController

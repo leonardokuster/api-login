@@ -237,16 +237,16 @@ class AppService {
             where: { id: usuario_id },
             include: [{
                 model: database.empresas,
-                as: 'empresa'
+                as: 'empresas'
             }]
         });
     
-        if (!usuario || !usuario.empresa) {
-            return null;
+        if (!usuario || !usuario.empresas) {
+            return [];  
         }
     
-        return usuario.empresa;
-    };
+        return usuario.empresas;  
+    }
     
     async editarEmpresa(dto) {
         const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios: sociosData } = dto;
@@ -485,8 +485,7 @@ class AppService {
     
             await funcionario.save({ transaction: t });
     
-            if (Array.isArray(dependentesData)) {
-                const dependentesExistentes = await database.dependentes.findAll({ where: { funcionario_id: funcionario.id } });
+            const dependentesExistentes = await database.dependentes.findAll({ where: { funcionario_id: funcionario.id } });
     
                 const dependentesIdsExistentes = dependentesExistentes.map(dep => dep.id);
                 const dependentesIdsNovos = dependentesData.map(dep => dep.id).filter(id => id);
@@ -516,7 +515,6 @@ class AppService {
                         }, { transaction: t });
                     }
                 }
-            }
     
             await t.commit();
     

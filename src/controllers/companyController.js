@@ -41,21 +41,21 @@ class CompanyController {
         const usuario_id = req.params.usuario_id;
     
         try {
-            console.log(`Iniciando busca de empresa para o usuário: ${usuario_id}`);
-            const empresa = await appService.buscarEmpresa(usuario_id);
+            console.log(`Iniciando busca de empresas para o usuário: ${usuario_id}`);
+            const empresas = await appService.buscarEmpresa(usuario_id);
     
-            if (!empresa) {
-                console.log(`Empresa não encontrada para o usuário: ${usuario_id}`);
-                return res.status(404).json({ message: 'Empresa não encontrada' });
+            if (empresas.length === 0) {
+                console.log(`Nenhuma empresa encontrada para o usuário: ${usuario_id}`);
+                return res.status(404).json({ message: 'Nenhuma empresa encontrada' });
             }
     
-            console.log(`Empresa encontrada para o usuário: ${usuario_id}`);
-            res.status(200).json(empresa);
+            console.log(`Empresas encontradas para o usuário: ${usuario_id}`);
+            res.status(200).json(empresas);
         } catch (error) {
-            console.error('Erro ao buscar empresa:', error);
+            console.error('Erro ao buscar empresas:', error);
             res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
         }
-    };   
+    };    
 
     static async editarEmpresa(req, res) {
         const empresa_id = req.params.id;

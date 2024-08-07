@@ -8,7 +8,8 @@ const taxController = require('../controllers/taxController');
 
 publicRoutes
     .post('/login', SessionController.logarUsuario)
-    .post('/signup', SessionController.cadastrarUsuario);
+    .post('/signup', SessionController.cadastrarUsuario)
+    .get('/users/:usuario_id', SessionController.buscarUsuario);
 
 publicRoutes
     .post('/companies/:usuario_id', CompanyController.criarEmpresa)
