@@ -18,6 +18,7 @@ publicRoutes
 
 publicRoutes
     .post('/employees/:empresa_id', EmployeeController.cadastrarFuncionario)
+    .get('/employees/:empresa_id', EmployeeController.buscarFuncionario)
     .put('/employees/:empresa_id', EmployeeController.editarFuncionario);
 
 publicRoutes

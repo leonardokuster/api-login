@@ -246,7 +246,7 @@ class AppService {
         }
     
         return usuario.empresas;  
-    }
+    };
     
     async editarEmpresa(dto) {
         const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios: sociosData } = dto;
@@ -525,6 +525,22 @@ class AppService {
             throw error;
         }
     };    
+
+    async buscarFuncionario(empresa_id) {
+        const empresa = await database.empresas.findOne({
+            where: { id: empresa_id },
+            include: [{
+                model: database.funcionarios,
+                as: 'funcionarios'
+            }]
+        });
+    
+        if (!empresa || !empresa.funcionarios) {
+            return [];  
+        }
+    
+        return empresa.funcionarios;  
+    };
 }
 
 module.exports = AppService;
