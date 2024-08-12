@@ -10,33 +10,33 @@ const moment = require('moment');
 class AppService {
     async logarUsuario(dto) {
         const { email, senha } = dto;
-    
-        const usuario = await database.usuarios.findOne({ 
+
+        let usuario = await database.usuarios.findOne({
             where: { emailPessoal: email }
         });
-    
+
         if (!usuario) {
             const empresa = await database.empresas.findOne({
                 where: { emailEmpresa: email },
                 include: {
-                    model: database.usuarios, 
-                    as: 'usuario' 
+                    model: database.usuarios,
+                    as: 'usuario'
                 }
             });
-    
+
             if (!empresa) {
                 throw new Error('Credenciais inválidas');
             }
-    
+
             usuario = empresa.usuario;
         }
-        
+
         if (!senha) {
             throw new Error('Senha não fornecida');
         }
-    
+
         const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
-    
+
         if (!senhaCorreta) {
             throw new Error('Credenciais inválidas');
         }
@@ -425,7 +425,7 @@ class AppService {
             nacionalidade, rg, orgaoExpedidor, dataRg, cep, endereco, numeroCasa, complementoCasa,
             bairro, cidade, estado, nomeMae, nomePai, escolaridade, estadoCivil, nomeConjuge,
             pis, dataPis, numeroCt, serie, dataCt, carteiraDigital, tituloEleitoral, zona,
-            secao, qntDependente, dependentes: dependentesData, funcao, dataAdmissao, salario,
+            secao, qntDependente, dependentes: dependentesData = [], funcao, dataAdmissao, salario,
             contratoExperiencia, horarios, insalubridade, periculosidade, quebraDeCaixa,
             valeTransporte, quantidadeVales
         } = dto;
@@ -486,35 +486,35 @@ class AppService {
             await funcionario.save({ transaction: t });
     
             const dependentesExistentes = await database.dependentes.findAll({ where: { funcionario_id: funcionario.id } });
+
+            const dependentesIdsExistentes = dependentesExistentes.map(dep => dep.id);
+            const dependentesIdsNovos = dependentesData.map(dep => dep.id).filter(id => id);
     
-                const dependentesIdsExistentes = dependentesExistentes.map(dep => dep.id);
-                const dependentesIdsNovos = dependentesData.map(dep => dep.id).filter(id => id);
-    
-                for (const dependente of dependentesExistentes) {
-                    if (!dependentesIdsNovos.includes(dependente.id)) {
-                        await dependente.destroy({ transaction: t });
-                    }
+            for (const dependente of dependentesExistentes) {
+                if (!dependentesIdsNovos.includes(dependente.id)) {
+                    await dependente.destroy({ transaction: t });
                 }
+            }
     
-                for (const dependenteData of dependentesData) {
-                    if (dependentesIdsExistentes.includes(dependenteData.id)) {
-                        const dependente = dependentesExistentes.find(dep => dep.id === dependenteData.id);
-                        if (dependenteData.nomeDependente) dependente.nomeDependente = dependenteData.nomeDependente;
-                        if (dependenteData.nascimentoDependente) dependente.nascimentoDependente = dependenteData.nascimentoDependente;
-                        if (dependenteData.cpfDependente) dependente.cpfDependente = dependenteData.cpfDependente;
-                        if (dependenteData.localNascimentoDependente) dependente.localNascimentoDependente = dependenteData.localNascimentoDependente;
-                        await dependente.save({ transaction: t });
-                    } else {
-                        await database.dependentes.create({
-                            id: uuidv4(),
-                            nomeDependente: dependenteData.nomeDependente,
-                            nascimentoDependente: dependenteData.nascimentoDependente,
-                            cpfDependente: dependenteData.cpfDependente,
-                            localNascimentoDependente: dependenteData.localNascimentoDependente,
-                            funcionario_id: funcionario.id
-                        }, { transaction: t });
-                    }
+            for (const dependenteData of dependentesData) {
+                if (dependentesIdsExistentes.includes(dependenteData.id)) {
+                    const dependente = dependentesExistentes.find(dep => dep.id === dependenteData.id);
+                    if (dependenteData.nomeDependente) dependente.nomeDependente = dependenteData.nomeDependente;
+                    if (dependenteData.nascimentoDependente) dependente.nascimentoDependente = dependenteData.nascimentoDependente;
+                    if (dependenteData.cpfDependente) dependente.cpfDependente = dependenteData.cpfDependente;
+                    if (dependenteData.localNascimentoDependente) dependente.localNascimentoDependente = dependenteData.localNascimentoDependente;
+                    await dependente.save({ transaction: t });
+                } else {
+                    await database.dependentes.create({
+                        id: uuidv4(),
+                        nomeDependente: dependenteData.nomeDependente,
+                        nascimentoDependente: dependenteData.nascimentoDependente,
+                        cpfDependente: dependenteData.cpfDependente,
+                        localNascimentoDependente: dependenteData.localNascimentoDependente,
+                        funcionario_id: funcionario.id
+                    }, { transaction: t });
                 }
+            }
     
             await t.commit();
     
