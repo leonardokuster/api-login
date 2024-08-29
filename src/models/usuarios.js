@@ -25,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     possuiEmpresa: DataTypes.STRING,
     qntEmpresas: DataTypes.INTEGER,
     empresa_id: {
-      type: DataTypes.UUID,
-      allowNull: true,
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: [],
       references: {
         model: 'empresas',  
         key: 'id',

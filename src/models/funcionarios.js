@@ -49,7 +49,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     cpf: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true 
     },
     rg: {
       type: DataTypes.STRING,

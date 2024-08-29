@@ -49,7 +49,7 @@ class SessionController {
                 endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
                 qntSocios, socios, senha
             });
-    
+
             res.status(201).json({
                 usuario,
                 message: 'Conta criada com sucesso! Verifique seu e-mail com os dados de login.'

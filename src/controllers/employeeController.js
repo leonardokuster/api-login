@@ -1,6 +1,5 @@
 const AppService = require('../services/appService');
 const appService = new AppService();
-const moment = require('moment');
 
 class EmployeeController {
     static async cadastrarFuncionario(req, res) {
@@ -15,6 +14,7 @@ class EmployeeController {
         } = req.body;
 
         console.log('Dados recebidos:', req.body);
+        console.log('ID Empresa:', empresa_id);
 
         if (!empresa_id) {
             return res.status(400).json({ message: 'ID da empresa não informado.' });
@@ -76,19 +76,24 @@ class EmployeeController {
         }
     };
 
-    static async buscarFuncionario(req, res) {
+    static async buscarFuncionarios(req, res) {
         const empresa_id = req.params.empresa_id;
-    
+        
         try {
             console.log(`Iniciando busca de funcionários para a empresa: ${empresa_id}`);
-            const funcionarios = await appService.buscarFuncionario(empresa_id);
+        
+            const empresaIds = empresa_id.split(',');
+            
+            const funcionarios = await appService.buscarFuncionariosPorEmpresaIds(empresaIds);
+            
+            console.log(funcionarios);
     
-            if (funcionarios.length === 0) {
-                console.log(`Nenhum funcionário encontrado para a empresa: ${empresa_id}`);
+            if (!funcionarios || funcionarios.length === 0) {
+                console.log(`Nenhum funcionário encontrado para as empresas: ${empresa_id}`);
                 return res.status(404).json({ message: 'Nenhum funcionário encontrado' });
             }
     
-            console.log(`Funcionários encontrados para a empresa: ${empresa_id}`);
+            console.log(`Funcionários encontrados para as empresas: ${empresa_id}`);
             res.status(200).json(funcionarios);
         } catch (error) {
             console.error('Erro ao buscar funcionários:', error);

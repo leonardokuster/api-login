@@ -49,7 +49,7 @@ class AppService {
             nome, emailPessoal, telefonePessoal, cpf, dataNascimento, possuiEmpresa, qntEmpresas,
             cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep,
             endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa,
-            qntSocios, socios: sociosData, senha
+            qntSocios, socios, senha
         } = dto;
     
         const t = await sequelize.transaction();
@@ -78,6 +78,8 @@ class AppService {
         const hashedSenha = await bcrypt.hash(senha, 10);
     
         try {
+            let qntEmpresas = 0;
+            
             const newUser = await database.usuarios.create({
                 id: uuidv4(),
                 nome,
@@ -91,6 +93,7 @@ class AppService {
             }, { transaction: t });
     
             let newCompany = null;
+    
             if (possuiEmpresa) {
                 newCompany = await database.empresas.create({
                     id: uuidv4(),
@@ -108,23 +111,24 @@ class AppService {
                     qntSocios,
                     usuario_id: newUser.id
                 }, { transaction: t });
-                newUser.empresa_id = newCompany.id;
+                
+                newUser.empresa_id = [newCompany.id];
                 await newUser.save({ transaction: t });
-    
-                for (const socioData of sociosData) {
+   
+                for (const socio of socios) {
                     await database.socios.create({
                         id: uuidv4(),
-                        nomeSocio: socioData.nomeSocio,
-                        cpfSocio: socioData.cpfSocio,
-                        emailSocio: socioData.emailSocio,
-                        telefoneSocio: socioData.telefoneSocio,
+                        nomeSocio: socio.nomeSocio,
+                        cpfSocio: socio.cpfSocio,
+                        emailSocio: socio.emailSocio,
+                        telefoneSocio: socio.telefoneSocio,
                         empresa_id: newCompany.id
                     }, { transaction: t });
                 }
-            }
+            };
     
             await t.commit();
-
+    
             const emailDestino = emailEmpresa ? emailEmpresa : emailPessoal;
             const info = await transporter.sendMail({
                 from: "Escritório Kuster <l.kusterr@gmail.com>",
@@ -134,14 +138,13 @@ class AppService {
                 <html>
                 <body>
                     <h2>Olá <strong>${nome}</strong>,</h2>
-                    <p>Obrigado por se cadastrar em nosso serviço! Abaixo estão os detalhes da sua conta:</p>
+                    <p>Obrigado por se cadastrar em nosso serviço!</p>
+                    
+                    <p>Para acessar sua conta, visite nosso site <a href='https://escritoriokuster.netlify.app/login'>aqui</a> e faça login usando o e-mail cadastrado em nosso sistema.</p>
     
                     <ul>
                         <li><strong>E-mail:</strong> ${emailDestino}</li>
-                        <li><strong>Senha:</strong> ${senha}</li>
                     </ul>
-    
-                    <p>Para acessar sua conta, visite nosso site <a href='https://escritoriokuster.netlify.app/login'>aqui</a> e faça login usando as credenciais acima.</p>
     
                     <p>Lembre-se de manter suas credenciais seguras e não compartilhá-las com ninguém.</p>
     
@@ -153,14 +156,14 @@ class AppService {
                 </html>
                 `,
             });
-
+    
             return newUser;
         } catch (error) {
             await t.rollback();
             console.error('Erro ao cadastrar usuário:', error);
             throw error;
         }
-    };
+    };    
 
     async buscarUsuario(usuario_id) {
         const usuario = await database.usuarios.findByPk(usuario_id);
@@ -188,7 +191,7 @@ class AppService {
             if (!usuario) {
                 throw new Error('Usuário não encontrado');
             }
-
+    
             const newCompany = await database.empresas.create({
                 id: uuidv4(),
                 cnpj,
@@ -206,11 +209,14 @@ class AppService {
                 usuario_id
             }, { transaction: t });
     
-            await database.usuarios.update(
-                { possuiEmpresa: true, qntEmpresas: usuario.qntEmpresas + 1, empresa_id: newCompany.id },
-                { where: { id: usuario_id }, transaction: t } 
-            );
+            usuario.empresa_id = [...(usuario.empresa_id || []), newCompany.id];
+            await usuario.save({ transaction: t });
     
+            await database.usuarios.update(
+                { possuiEmpresa: true, qntEmpresas: usuario.qntEmpresas + 1 },
+                { where: { id: usuario_id }, transaction: t }
+            );
+   
             for (const socioData of sociosData) {
                 await database.socios.create({
                     id: uuidv4(),
@@ -230,7 +236,7 @@ class AppService {
             console.error('Erro ao criar empresa:', error);
             throw error;
         }
-    };
+    };    
 
     async buscarEmpresa(usuario_id) {
         const usuario = await database.usuarios.findOne({
@@ -526,21 +532,132 @@ class AppService {
         }
     };    
 
-    async buscarFuncionario(empresa_id) {
-        const empresa = await database.empresas.findOne({
-            where: { id: empresa_id },
-            include: [{
-                model: database.funcionarios,
-                as: 'funcionarios'
-            }]
+    async buscarDependentes(funcionario_id) {
+        const dependentes = await database.dependentes.findAll({
+            where: { funcionario_id }
+        });
+
+        if (!dependentes) {
+            throw new Error('Nenhum dependente encontrado.');
+        }
+
+        return dependentes;
+    };
+
+    async adicionarDependente(funcionario_id, dependenteDto) {
+        const { nomeDependente, dataNascimentoDependente, cpfDependente, localNascimentoDependente } = dependenteDto;
+
+        const funcionario = await database.funcionarios.findByPk(funcionario_id);
+
+        if (!funcionario) {
+            throw new Error('Funcionário não encontrado.');
+        }
+
+        try {
+            const novoDependente = await database.dependentes.create({
+                id: uuidv4(),
+                nomeDependente,
+                dataNascimentoDependente,
+                cpfDependente,
+                localNascimentoDependente,
+                funcionario_id
+            });
+
+            return novoDependente;
+        } catch (error) {
+            console.error('Erro ao adicionar dependente:', error);
+            throw error;
+        }
+    };
+
+    async removerDependente(dependente_id) {
+        const dependente = await database.dependentes.findByPk(dependente_id);
+
+        if (!dependente) {
+            throw new Error('Dependente não encontrado.');
+        }
+
+        try {
+            await dependente.destroy();
+            return { message: 'Dependente removido com sucesso.' };
+        } catch (error) {
+            console.error('Erro ao remover dependente:', error);
+            throw error;
+        }
+    };
+
+    async buscarFuncionariosPorEmpresaIds(empresa_ids) {
+        const funcionarios = await database.funcionarios.findAll({
+            where: {
+                empresa_id: {
+                    [database.Sequelize.Op.in]: empresa_ids
+                }
+            }
         });
     
-        if (!empresa || !empresa.funcionarios) {
-            return [];  
+        if (funcionarios.length === 0) {
+            throw new Error('Nenhum funcionário encontrado para as empresas associadas.');
         }
     
-        return empresa.funcionarios;  
+        return funcionarios;
+    };    
+
+    async adicionarEnderecoEmpresa(empresa_id, enderecoDto) {
+        const { cep, endereco, numero, complemento, bairro, cidade, estado } = enderecoDto;
+
+        const empresa = await database.empresas.findByPk(empresa_id);
+
+        if (!empresa) {
+            throw new Error('Empresa não encontrada.');
+        }
+
+        try {
+            empresa.cep = cep;
+            empresa.endereco = endereco;
+            empresa.numero = numero;
+            empresa.complemento = complemento;
+            empresa.bairro = bairro;
+            empresa.cidade = cidade;
+            empresa.estado = estado;
+
+            await empresa.save();
+
+            return empresa;
+        } catch (error) {
+            console.error('Erro ao adicionar endereço à empresa:', error);
+            throw error;
+        }
     };
+
+    async listarEmpresas() {
+        try {
+            const empresas = await database.empresas.findAll();
+            return empresas;
+        } catch (error) {
+            console.error('Erro ao listar empresas:', error);
+            throw error;
+        }
+    };
+
+    async listarUsuarios() {
+        try {
+            const usuarios = await database.usuarios.findAll();
+            return usuarios;
+        } catch (error) {
+            console.error('Erro ao listar usuários:', error);
+            throw error;
+        }
+    };
+
+    async listarFuncionarios() {
+        try {
+            const funcionarios = await database.funcionarios.findAll();
+            return funcionarios;
+        } catch (error) {
+            console.error('Erro ao listar funcionários:', error);
+            throw error;
+        }
+    };    
 }
 
 module.exports = AppService;
