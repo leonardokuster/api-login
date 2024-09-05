@@ -83,20 +83,22 @@ class EmployeeController {
             console.log(`Iniciando busca de funcionários para a empresa: ${empresa_id}`);
         
             const empresaIds = empresa_id.split(',');
-            
             const funcionarios = await appService.buscarFuncionariosPorEmpresaIds(empresaIds);
             
-            console.log(funcionarios);
-    
             if (!funcionarios || funcionarios.length === 0) {
-                console.log(`Nenhum funcionário encontrado para as empresas: ${empresa_id}`);
-                return res.status(404).json({ message: 'Nenhum funcionário encontrado' });
+                console.log(`Nenhum funcionário encontrado para a empresa: ${empresa_id}`);
+                return res.status(404).json({ message: 'Nenhum funcionário cadastrado' });
             }
     
             console.log(`Funcionários encontrados para as empresas: ${empresa_id}`);
             res.status(200).json(funcionarios);
         } catch (error) {
-            console.error('Erro ao buscar funcionários:', error);
+            console.error('Erro ao buscar funcionários:', error.stack);
+    
+            if (error.message.includes('Nenhum funcionário encontrado para as empresas associadas')) {
+                return res.status(404).json({ message: 'Nenhum funcionário cadastrado, volte para cadastrar.' });
+            }
+
             res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
         }
     };    

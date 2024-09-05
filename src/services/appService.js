@@ -423,7 +423,7 @@ class AppService {
             console.error('Erro ao cadastrar funcionário:', error);
             throw error;
         }
-    };   
+    }; 
     
     async editarFuncionario(dto) {
         const {
