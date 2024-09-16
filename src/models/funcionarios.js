@@ -43,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    nacionalidade: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     cpf: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -110,6 +106,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     qntDependente: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
       allowNull: false
     },
     escolaridade: {

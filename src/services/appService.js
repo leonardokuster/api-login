@@ -319,8 +319,8 @@ class AppService {
 
     async cadastrarFuncionario(dto, empresa_id) {
         const {
-            nome, email, telefone, sexo, corEtnia, dataNascimento, localNascimento, nacionalidade, cpf, rg, orgaoExpedidor, dataRg, cep, endereco, numeroCasa,
-            complementoCasa, bairro, cidade, estado, nomeMae, nomePai, escolaridade, estadoCivil, nomeConjuge, pis, numeroCt, serie, dataCt, carteiraDigital, tituloEleitoral, zona, secao, qntDependente, dependentes: dependentesData, funcao, dataAdmissao, salario, contratoExperiencia, horarios, insalubridade,
+            nome, email, telefone, sexo, corEtnia, dataNascimento, localNascimento, cpf, rg, orgaoExpedidor, dataRg, cep, endereco, numeroCasa,
+            complementoCasa, bairro, cidade, estado, nomeMae, nomePai, escolaridade, estadoCivil, nomeConjuge, pis, numeroCt, serie, dataCt, carteiraDigital, tituloEleitoral, zona, secao, funcao, dataAdmissao, salario, contratoExperiencia, horarios, insalubridade,
             periculosidade, quebraDeCaixa, valeTransporte, quantidadeVales
         } = dto;
     
@@ -365,7 +365,6 @@ class AppService {
                 corEtnia,
                 dataNascimento: formattedDataNascimento,
                 localNascimento,
-                nacionalidade,
                 cpf,
                 rg,
                 orgaoExpedidor,
@@ -390,7 +389,6 @@ class AppService {
                 tituloEleitoral,
                 zona,
                 secao,
-                qntDependente,
                 funcao,
                 dataAdmissao: formattedDataAdmissao,
                 salario: formattedSalario,
@@ -403,18 +401,7 @@ class AppService {
                 quantidadeVales,
                 empresa_id
             }, { transaction: t });
-
-            for (const dependenteData of dependentesData) {
-                await database.dependentes.create({
-                    id: uuidv4(),
-                    nomeDependente: dependenteData.nomeDependente,
-                    dataNascimentoDependente: dependenteData.dataNascimentoDependente,
-                    cpfDependente: dependenteData.cpfDependente,
-                    localNascimentoDependente: dependenteData.localNascimentoDependente,
-                    funcionario_id: newEmployee.id
-                }, { transaction: t });
-            }
-    
+   
             await t.commit();
     
             return newEmployee;
@@ -427,11 +414,10 @@ class AppService {
     
     async editarFuncionario(dto) {
         const {
-            cpf, nome, email, telefone, sexo, corEtnia, dataNascimento, localNascimento,
-            nacionalidade, rg, orgaoExpedidor, dataRg, cep, endereco, numeroCasa, complementoCasa,
+            cpf, nome, email, telefone, sexo, corEtnia, dataNascimento, localNascimento, rg, orgaoExpedidor, dataRg, cep, endereco, numeroCasa, complementoCasa,
             bairro, cidade, estado, nomeMae, nomePai, escolaridade, estadoCivil, nomeConjuge,
             pis, dataPis, numeroCt, serie, dataCt, carteiraDigital, tituloEleitoral, zona,
-            secao, qntDependente, dependentes: dependentesData = [], funcao, dataAdmissao, salario,
+            secao, funcao, dataAdmissao, salario,
             contratoExperiencia, horarios, insalubridade, periculosidade, quebraDeCaixa,
             valeTransporte, quantidadeVales
         } = dto;
@@ -452,7 +438,6 @@ class AppService {
             if (corEtnia) funcionario.corEtnia = corEtnia;
             if (dataNascimento) funcionario.dataNascimento = dataNascimento;
             if (localNascimento) funcionario.localNascimento = localNascimento;
-            if (nacionalidade) funcionario.nacionalidade = nacionalidade;
             if (rg) funcionario.rg = rg;
             if (orgaoExpedidor) funcionario.orgaoExpedidor = orgaoExpedidor;
             if (dataRg) funcionario.dataRg = dataRg;
@@ -477,7 +462,6 @@ class AppService {
             if (tituloEleitoral) funcionario.tituloEleitoral = tituloEleitoral;
             if (zona) funcionario.zona = zona;
             if (secao) funcionario.secao = secao;
-            if (qntDependente) funcionario.qntDependente = qntDependente;
             if (funcao) funcionario.funcao = funcao;
             if (dataAdmissao) funcionario.dataAdmissao = dataAdmissao;
             if (salario) funcionario.salario = salario;
@@ -489,39 +473,7 @@ class AppService {
             if (valeTransporte) funcionario.valeTransporte = valeTransporte;
             if (quantidadeVales) funcionario.quantidadeVales = quantidadeVales;
     
-            await funcionario.save({ transaction: t });
-    
-            const dependentesExistentes = await database.dependentes.findAll({ where: { funcionario_id: funcionario.id } });
-
-            const dependentesIdsExistentes = dependentesExistentes.map(dep => dep.id);
-            const dependentesIdsNovos = dependentesData.map(dep => dep.id).filter(id => id);
-    
-            for (const dependente of dependentesExistentes) {
-                if (!dependentesIdsNovos.includes(dependente.id)) {
-                    await dependente.destroy({ transaction: t });
-                }
-            }
-    
-            for (const dependenteData of dependentesData) {
-                if (dependentesIdsExistentes.includes(dependenteData.id)) {
-                    const dependente = dependentesExistentes.find(dep => dep.id === dependenteData.id);
-                    if (dependenteData.nomeDependente) dependente.nomeDependente = dependenteData.nomeDependente;
-                    if (dependenteData.nascimentoDependente) dependente.nascimentoDependente = dependenteData.nascimentoDependente;
-                    if (dependenteData.cpfDependente) dependente.cpfDependente = dependenteData.cpfDependente;
-                    if (dependenteData.localNascimentoDependente) dependente.localNascimentoDependente = dependenteData.localNascimentoDependente;
-                    await dependente.save({ transaction: t });
-                } else {
-                    await database.dependentes.create({
-                        id: uuidv4(),
-                        nomeDependente: dependenteData.nomeDependente,
-                        nascimentoDependente: dependenteData.nascimentoDependente,
-                        cpfDependente: dependenteData.cpfDependente,
-                        localNascimentoDependente: dependenteData.localNascimentoDependente,
-                        funcionario_id: funcionario.id
-                    }, { transaction: t });
-                }
-            }
-    
+            await funcionario.save({ transaction: t });    
             await t.commit();
     
             return funcionario;
@@ -532,32 +484,69 @@ class AppService {
         }
     };    
 
-    async buscarDependentes(funcionario_id) {
-        const dependentes = await database.dependentes.findAll({
-            where: { funcionario_id }
+    async buscarFuncionariosPorEmpresaIds(empresa_ids) {
+        const funcionarios = await database.funcionarios.findAll({
+            where: {
+                empresa_id: {
+                    [database.Sequelize.Op.in]: empresa_ids
+                }
+            }
         });
 
-        if (!dependentes) {
-            throw new Error('Nenhum dependente encontrado.');
+        if (empresa_ids.length === 0) {
+            throw new Error('Nenhuma empresa associada.');
+        }       
+    
+        if (funcionarios.length === 0) {
+            throw new Error('Nenhum funcionário encontrado para as empresas associadas.');
         }
+    
+        return funcionarios;
+    };    
+
+    async buscarDependentesPorFuncionarioIds(funcionario_ids) {
+        const dependentes = await database.dependentes.findAll({
+            where: {
+                funcionario_id: {
+                    [database.Sequelize.Op.in]: funcionario_ids
+                }
+            }
+        });
+
+        if (dependentes.length === 0) {
+            throw new Error('Nenhum dependente encontrado.');
+        }        
 
         return dependentes;
     };
 
     async adicionarDependente(funcionario_id, dependenteDto) {
         const { nomeDependente, dataNascimentoDependente, cpfDependente, localNascimentoDependente } = dependenteDto;
-
         const funcionario = await database.funcionarios.findByPk(funcionario_id);
-
+        
         if (!funcionario) {
             throw new Error('Funcionário não encontrado.');
         }
+
+        const formatDate = (date) => {
+            const formats = ['YYYY-MM-DD', 'DD/MM/YYYY', 'MM/DD/YYYY'];
+        
+            let formattedDate = moment(date, formats, true);
+            
+            if (!formattedDate.isValid()) {
+                formattedDate = moment(date);  
+            }
+            
+            return formattedDate.isValid() ? formattedDate.format('YYYY-MM-DD') : '';
+        };
+
+        const formattedDataNascimentoDependente = formatDate(dataNascimentoDependente);
 
         try {
             const novoDependente = await database.dependentes.create({
                 id: uuidv4(),
                 nomeDependente,
-                dataNascimentoDependente,
+                dataNascimentoDependente: formattedDataNascimentoDependente,
                 cpfDependente,
                 localNascimentoDependente,
                 funcionario_id
@@ -586,20 +575,34 @@ class AppService {
         }
     };
 
-    async buscarFuncionariosPorEmpresaIds(empresa_ids) {
-        const funcionarios = await database.funcionarios.findAll({
-            where: {
-                empresa_id: {
-                    [database.Sequelize.Op.in]: empresa_ids
-                }
-            }
-        });
+    async editarDependente(dto) {
+        const {
+            nomeDependente, dataNascimentoDependente, cpfDependente, localNascimentoDependente
+        } = dto;
     
-        if (funcionarios.length === 0) {
-            throw new Error('Nenhum funcionário encontrado para as empresas associadas.');
+        const dependente = await database.dependentes.findOne({ where: { cpfDependente } });
+    
+        if (!dependente) {
+            throw new Error('Dependente não encontrado.');
         }
     
-        return funcionarios;
+        const t = await sequelize.transaction();
+    
+        try {
+            if (nomeDependente) dependente.nomeDependente = nomeDependente;
+            if (dataNascimentoDependente) dependente.dataNascimentoDependente = dataNascimentoDependente;
+            if (cpfDependente) dependente.cpfDependente = cpfDependente;
+            if (localNascimentoDependente) dependente.localNascimentoDependente = localNascimentoDependente;
+        
+            await dependente.save({ transaction: t });
+    
+            await t.commit();  
+            return dependente;
+        } catch (error) {
+            await t.rollback();
+            console.error('Erro ao editar dependente:', error.message);
+            throw error;
+        }
     };    
 
     async adicionarEnderecoEmpresa(empresa_id, enderecoDto) {
