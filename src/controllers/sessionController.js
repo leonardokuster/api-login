@@ -75,6 +75,47 @@ class SessionController {
             res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
         }
     };   
+
+    static async listarUsuarios(req, res) {
+        try {
+            const usuarios = await appService.listarUsuarios();
+    
+            if (!usuarios || usuarios.length === 0) { return res.status(404).json({ message: 'Nenhum usuário encontrado.' });}
+    
+            res.status(200).json(usuarios);  
+    
+        } catch (error) {
+            console.error('Erro ao listar usuários:', error); 
+            res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
+        }
+    };    
+
+    static async editarUsuario(req, res) {
+        const { usuario_id } = req.params;
+
+        const {
+            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, tipo
+        } = req.body;
+
+        try {
+            if (tipo === 'admin') {
+                const user = await appService.editarUsuario({
+                    nome, emailPessoal, telefonePessoal, cpf, dataNascimento, tipo
+                }, usuario_id);
+                return res.status(200).json(user);
+            } else if (tipo === 'collaborator') {
+                const user = await appService.editarUsuario({
+                    nome, emailPessoal, telefonePessoal, cpf, dataNascimento
+                }, usuario_id);
+                return res.status(200).json(user);
+            } else {
+                return res.status(401).json({ error: 'Não autorizado' });
+            }
+        } catch (error) {
+            console.log('Message error:', error.message);
+            res.status(400).send({ message: error.message });
+        }
+    };
 }
 
 module.exports = SessionController

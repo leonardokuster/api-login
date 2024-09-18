@@ -10,7 +10,9 @@ const taxController = require('../controllers/taxController');
 publicRoutes
     .post('/login', SessionController.logarUsuario)
     .post('/signup', SessionController.cadastrarUsuario)
-    .get('/users/:usuario_id', SessionController.buscarUsuario);
+    .get('/users/:usuario_id', SessionController.buscarUsuario)
+    .put('/users/:usuario_id', SessionController.editarUsuario)
+    .get('/users', SessionController.listarUsuarios);
 
 publicRoutes
     .post('/companies/:usuario_id', CompanyController.criarEmpresa)

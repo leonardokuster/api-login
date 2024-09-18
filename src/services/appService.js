@@ -173,6 +173,48 @@ class AppService {
         return usuario;
     };
 
+    async listarUsuarios() {
+        try {
+            const usuarios = await database.usuarios.findAll();
+            return usuarios;
+        } catch (error) {
+            console.error('Erro ao listar usuários:', error);
+            throw error;
+        }
+    };
+
+    async editarUsuario(dto) {
+        const {
+            nome, emailPessoal, telefonePessoal, cpf, dataNascimento, tipo
+        } = dto;
+    
+        const usuario = await database.usuarios.findOne({ where: { cpf } });
+    
+        if (!usuario) {
+            throw new Error('Usuário não encontrado.');
+        }
+    
+        const t = await sequelize.transaction();
+    
+        try {
+            if (nome) usuario.nome = nome;
+            if (emailPessoal) usuario.emailPessoal = emailPessoal;
+            if (telefonePessoal) usuario.telefonePessoal = telefonePessoal;
+            if (cpf) usuario.cpf = cpf;
+            if (dataNascimento) usuario.dataNascimento = dataNascimento;
+            if (tipo) usuario.tipo = tipo;
+                
+            await usuario.save({ transaction: t });    
+            await t.commit();
+    
+            return usuario;
+        } catch (error) {
+            await t.rollback();
+            console.error('Erro ao editar usuário:', error.message);
+            throw error;
+        }
+    };    
+
     async criarEmpresa(dto, usuario_id) {
         const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios: sociosData } = dto;
     
