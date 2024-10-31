@@ -22,7 +22,8 @@ publicRoutes
 publicRoutes
     .post('/employees/:empresa_id', EmployeeController.cadastrarFuncionario)
     .get('/employees/:empresa_id', EmployeeController.buscarFuncionarios)
-    .put('/employees/:empresa_id', EmployeeController.editarFuncionario);
+    .put('/employees/:empresa_id', EmployeeController.editarFuncionario)
+    .delete('/employees/:funcionario_id', EmployeeController.removerFuncionario);
 
 publicRoutes
     .post('/relatives/:funcionario_id', RelativeController.cadastrarDependente)

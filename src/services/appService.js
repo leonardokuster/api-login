@@ -526,25 +526,33 @@ class AppService {
         }
     };    
 
-    async buscarFuncionariosPorEmpresaIds(empresa_ids) {
-        const funcionarios = await database.funcionarios.findAll({
-            where: {
-                empresa_id: {
-                    [database.Sequelize.Op.in]: empresa_ids
-                }
-            }
-        });
+    async removerFuncionario(funcionario_id) {
+        const funcionario = await database.funcionarios.findByPk(funcionario_id);
 
-        if (empresa_ids.length === 0) {
-            throw new Error('Nenhuma empresa associada.');
-        }       
+        if (!funcionario) {
+            throw new Error('Funcionário não encontrado.');
+        }
+
+        try {
+            await funcionario.destroy();
+            return { message: 'Funcionário removido com sucesso.' };
+        } catch (error) {
+            console.error('Erro ao remover funcionário:', error);
+            throw error;
+        }
+    };
+
+    async buscarFuncionariosPorEmpresaId(empresa_id) {
+        const funcionarios = await database.funcionarios.findAll({
+            where: { empresa_id } 
+        });
     
-        if (funcionarios.length === 0) {
-            throw new Error('Nenhum funcionário encontrado para as empresas associadas.');
+        if (!funcionarios || funcionarios.length === 0) {
+            throw new Error('Nenhum funcionário encontrado para a empresa associada.');
         }
     
         return funcionarios;
-    };    
+    };
 
     async buscarDependentesPorFuncionarioIds(funcionario_ids) {
         const dependentes = await database.dependentes.findAll({

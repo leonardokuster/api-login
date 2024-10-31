@@ -63,26 +63,47 @@ class EmployeeController {
         try {
             console.log(`Iniciando busca de funcionários para a empresa: ${empresa_id}`);
         
-            const empresaIds = empresa_id.split(',');
-            const funcionarios = await appService.buscarFuncionariosPorEmpresaIds(empresaIds);
-            
+            const funcionarios = await appService.buscarFuncionariosPorEmpresaId(empresa_id); 
+        
             if (!funcionarios || funcionarios.length === 0) {
                 console.log(`Nenhum funcionário encontrado para a empresa: ${empresa_id}`);
                 return res.status(404).json({ message: 'Nenhum funcionário cadastrado' });
             }
     
-            console.log(`Funcionários encontrados para as empresas: ${empresa_id}`);
+            console.log(`Funcionários encontrados para a empresa: ${empresa_id}`);
             res.status(200).json(funcionarios);
         } catch (error) {
             console.error('Erro ao buscar funcionários:', error.stack);
     
-            if (error.message.includes('Nenhum funcionário encontrado para as empresas associadas')) {
+            if (error.message.includes('Nenhum funcionário encontrado para a empresa associada')) {
                 return res.status(404).json({ message: 'Nenhum funcionário cadastrado, volte para cadastrar.' });
             }
-
+    
             res.status(500).json({ message: 'Erro interno do servidor', error: error.message });
         }
-    };     
+    };
+
+    static async removerFuncionario(req, res) {
+        const { funcionario_id } = req.params;
+
+        if (!funcionario_id) {
+            return res.status(400).json({ message: 'ID do funcionário não informado.' });
+        }
+
+        try {
+            const result = await appService.removerFuncionario(funcionario_id);
+
+            res.status(200).json({ message: result.message });
+        } catch (error) {
+            console.error('Erro ao remover funcionário no controller:', error);
+
+            if (error.message.includes('Funcionário não encontrado')) {
+                return res.status(404).json({ message: 'Funcionário não encontrado.' });
+            }
+
+            res.status(500).json({ message: 'Erro interno do servidor', details: error.message });
+        }
+    };
 }
 
 module.exports = EmployeeController;
