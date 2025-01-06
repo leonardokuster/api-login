@@ -215,6 +215,22 @@ class AppService {
         }
     };    
 
+    async removerUsuario(usuario_id) {
+        const usuario = await database.usuarios.findByPk(usuario_id);
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado.');
+        }
+
+        try {
+            await usuario.destroy();
+            return { message: 'Usuário removido com sucesso.' };
+        } catch (error) {
+            console.error('Erro ao remover usuário:', error);
+            throw error;
+        }
+    };
+
     async criarEmpresa(dto, usuario_id) {
         const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios: sociosData } = dto;
     
@@ -299,7 +315,7 @@ class AppService {
     async editarEmpresa(dto) {
         const { cnpj, nomeFantasia, razaoSocial, atividadesExercidas, capitalSocial, cep, endereco, numeroEmpresa, complementoEmpresa, emailEmpresa, telefoneEmpresa, qntSocios, socios: sociosData } = dto;
     
-        const empresa = await database.empresas.findOne({ where: { cnpj } });
+        const empresa = await database.empresas.findByPk(dto.id);
     
         if (!empresa) {
             throw new Error('Nenhuma empresa encontrada.');
@@ -309,6 +325,7 @@ class AppService {
 
         try {
             const updates = {};
+            if (cnpj) updates.cnpj = cnpj;
             if (nomeFantasia) updates.nomeFantasia = nomeFantasia;
             if (razaoSocial) updates.razaoSocial = razaoSocial;
             if (atividadesExercidas) updates.atividadesExercidas = atividadesExercidas;
@@ -324,37 +341,64 @@ class AppService {
             await empresa.update(updates, { transaction: t });
     
             if (Array.isArray(sociosData)) {
+                console.log("Sócios recebidos para atualização:", sociosData);
                 for (const socioData of sociosData) {
                     const { id, nomeSocio, cpfSocio, emailSocio, telefoneSocio } = socioData;
-    
+            
                     if (id) {
-                        await database.socios.update({
-                            nomeSocio,
-                            cpfSocio,
-                            emailSocio,
-                            telefoneSocio
-                        }, {
-                            where: { id },
-                            transaction: t
-                        });
+                        await database.socios.update(
+                            { nomeSocio, cpfSocio, emailSocio, telefoneSocio },
+                            { where: { id }, transaction: t }
+                        );
                     } else {
-                        await database.socios.create({
-                            id: uuidv4(),
-                            nomeSocio,
-                            cpfSocio,
-                            emailSocio,
-                            telefoneSocio,
-                            empresa_id: empresa.id
-                        }, { transaction: t });
+                        await database.socios.create(
+                            {
+                                id: uuidv4(),
+                                nomeSocio,
+                                cpfSocio,
+                                emailSocio,
+                                telefoneSocio,
+                                empresa_id: empresa.id,
+                            },
+                            { transaction: t }
+                        );
                     }
                 }
-            }
+            } else {
+                console.error("sociosData não é um array válido:", sociosData);
+            }           
     
             await t.commit();
+
+            await empresa.reload({
+                include: [
+                    {
+                        model: database.socios,
+                        as: 'socios', 
+                    },
+                ],
+            });
+
             return empresa;
         } catch (error) {
             await t.rollback();
             console.error('Erro ao editar empresa:', error.message);
+            throw error;
+        }
+    };
+
+    async removerEmpresa(empresa_id) {
+        const empresa = await database.empresas.findByPk(empresa_id);
+
+        if (!empresa) {
+            throw new Error('Empresa não encontrada.');
+        }
+
+        try {
+            await empresa.destroy();
+            return { message: 'Empresa removido com sucesso.' };
+        } catch (error) {
+            console.error('Erro ao remover empresa:', error);
             throw error;
         }
     };

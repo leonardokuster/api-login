@@ -85,6 +85,28 @@ class CompanyController {
             res.status(400).send({ message: error.message });
         }
     };
+
+    static async removerEmpresa(req, res) {
+        const { empresa_id } = req.params;
+
+        if (!empresa_id) {
+            return res.status(400).json({ message: 'ID da empresa não foi informado.' });
+        }
+
+        try {
+            const result = await appService.removerEmpresa(empresa_id);
+
+            res.status(200).json({ message: result.message });
+        } catch (error) {
+            console.error('Erro ao remover empresa no controller:', error);
+
+            if (error.message.includes('Empresa não encontrada')) {
+                return res.status(404).json({ message: 'Empresa não encontrada.' });
+            }
+
+            res.status(500).json({ message: 'Erro interno do servidor', details: error.message });
+        }
+    };
 }
 
 module.exports = CompanyController

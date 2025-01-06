@@ -116,6 +116,28 @@ class SessionController {
             res.status(400).send({ message: error.message });
         }
     };
+
+    static async removerUsuario(req, res) {
+        const { usuario_id } = req.params;
+
+        if (!usuario_id) {
+            return res.status(400).json({ message: 'ID do usuário não foi informado.' });
+        }
+
+        try {
+            const result = await appService.removerUsuario(usuario_id);
+
+            res.status(200).json({ message: result.message });
+        } catch (error) {
+            console.error('Erro ao remover usuário no controller:', error);
+
+            if (error.message.includes('Usuário não encontrado')) {
+                return res.status(404).json({ message: 'Usuário não encontrado.' });
+            }
+
+            res.status(500).json({ message: 'Erro interno do servidor', details: error.message });
+        }
+    };
 }
 
 module.exports = SessionController

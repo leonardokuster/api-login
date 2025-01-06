@@ -12,12 +12,14 @@ publicRoutes
     .post('/signup', SessionController.cadastrarUsuario)
     .get('/users/:usuario_id', SessionController.buscarUsuario)
     .put('/users/:usuario_id', SessionController.editarUsuario)
+    .delete('/users/:usuario_id', SessionController.removerUsuario)
     .get('/users', SessionController.listarUsuarios);
 
 publicRoutes
     .post('/companies/:usuario_id', CompanyController.criarEmpresa)
     .get('/companies/:usuario_id', CompanyController.buscarEmpresa)
-    .put('/companies/:usuario_id', CompanyController.editarEmpresa);
+    .put('/companies/:usuario_id', CompanyController.editarEmpresa)
+    .delete('/companies/:empresa_id', CompanyController.removerEmpresa);
 
 publicRoutes
     .post('/employees/:empresa_id', EmployeeController.cadastrarFuncionario)
